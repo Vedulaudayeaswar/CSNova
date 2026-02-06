@@ -63,7 +63,7 @@ async function loadQuestions() {
       urlParams.get("session_id") || localStorage.getItem("sessionId");
 
     const response = await fetch(
-      `http://localhost:5000/api/questions/academic?count=15&session_id=${sessionId}`,
+      `/api/questions/academic?count=15&session_id=${sessionId}`,
     );
     const data = await response.json();
     questions = data.questions;
@@ -1416,7 +1416,7 @@ async function selectAnswer(index) {
 
   // Save answer to Flask API
   try {
-    await fetch("http://localhost:5000/api/answer/submit", {
+    await fetch("/api/answer/submit", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -1497,13 +1497,10 @@ function restartGame() {
 // Fetch career recommendation from backend
 async function fetchCareerRecommendation() {
   try {
-    const response = await fetch(
-      `http://localhost:5000/api/career/recommend/${sessionId}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      },
-    );
+    const response = await fetch(`/api/career/recommend/${sessionId}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
 
     const data = await response.json();
 

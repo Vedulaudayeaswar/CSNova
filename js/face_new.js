@@ -33,8 +33,8 @@ class EmotionDetector {
       totalFrames: 0,
     };
 
-    // API endpoint
-    this.API_URL = "http://localhost:5000/api";
+    // API endpoint - use relative URL to work on both local and production
+    this.API_URL = "/api";
 
     this.init();
   }

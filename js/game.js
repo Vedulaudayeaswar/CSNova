@@ -56,9 +56,7 @@ function toggleMusic() {
 // Fetch emotional questions from Flask API
 async function loadQuestions() {
   try {
-    const response = await fetch(
-      "http://localhost:5000/api/questions/emotional?count=10",
-    );
+    const response = await fetch("/api/questions/emotional?count=10");
     const data = await response.json();
     questions = data.questions;
     console.log(
@@ -1292,7 +1290,7 @@ window.selectAnswer = async function (index) {
 
   // Save answer to Flask API
   try {
-    await fetch("http://localhost:5000/api/answer/submit", {
+    await fetch("/api/answer/submit", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

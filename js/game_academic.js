@@ -2,7 +2,7 @@
 // GAME 3: ACADEMIC QUESTIONS WITH 10-SECOND TIMER + CAREER RECOMMENDATION
 // ============================================================================
 
-const API_URL = "http://localhost:5000/api";
+const API_URL = "/api";
 let sessionId = null;
 let academicQuestions = [];
 let currentQuestionIndex = 0;

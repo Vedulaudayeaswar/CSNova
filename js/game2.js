@@ -64,7 +64,7 @@ async function loadQuestions() {
       urlParams.get("session_id") || localStorage.getItem("sessionId");
 
     const response = await fetch(
-      `http://localhost:5000/api/questions/reasoning?count=10&session_id=${sessionId}`,
+      `/api/questions/reasoning?count=10&session_id=${sessionId}`,
     );
     const data = await response.json();
     questions = data.questions;
@@ -1508,7 +1508,7 @@ async function selectAnswer(index) {
 
   // Save answer to Flask API
   try {
-    await fetch("http://localhost:5000/api/answer/submit", {
+    await fetch("/api/answer/submit", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

@@ -2,7 +2,7 @@
 // GAME 1: EMOTIONAL INTELLIGENCE QUESTIONS
 // ============================================================================
 
-const API_URL = "http://localhost:5000/api";
+const API_URL = "/api";
 let sessionId = null;
 let emotionalQuestions = [];
 let currentQuestionIndex = 0;

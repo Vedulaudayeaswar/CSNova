@@ -2,7 +2,7 @@
 // GAME 2: REASONING QUESTIONS WITH 10-SECOND TIMER
 // ============================================================================
 
-const API_URL = "http://localhost:5000/api";
+const API_URL = "/api";
 let sessionId = null;
 let reasoningQuestions = [];
 let currentQuestionIndex = 0;

@@ -33,8 +33,8 @@ class EmotionDetector {
       totalFrames: 0,
     };
 
-    // API endpoint
-    this.API_URL = "http://localhost:5000/api";
+    // API endpoint - use relative URL to work on both local and production
+    this.API_URL = "/api";
 
     this.init();
   }
@@ -173,14 +173,20 @@ class EmotionDetector {
 
     try {
       // Capture current frame from video
-      this.ctx.drawImage(this.video, 0, 0, this.canvas.width, this.canvas.height);
-      const imageData = this.canvas.toDataURL('image/jpeg', 0.8);
+      this.ctx.drawImage(
+        this.video,
+        0,
+        0,
+        this.canvas.width,
+        this.canvas.height,
+      );
+      const imageData = this.canvas.toDataURL("image/jpeg", 0.8);
 
       // Send frame to backend for emotion detection
       const response = await fetch(`${this.API_URL}/emotion/detect`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ image: imageData }),
       });
@@ -190,7 +196,8 @@ class EmotionDetector {
       // Update stats
       this.frameCount++;
       const currentTime = Date.now() - this.startTime;
-      document.getElementById("sessionTime").textContent = this.formatTime(currentTime);
+      document.getElementById("sessionTime").textContent =
+        this.formatTime(currentTime);
       document.getElementById("frameCount").textContent = this.frameCount;
 
       if (result.success && result.face_detected) {
@@ -224,12 +231,12 @@ class EmotionDetector {
     // Calculate emotion scores
     const happy = Math.round((probs.Happy || 0) * 100);
     const sad = Math.round((probs.Sad || 0) * 100);
-    
+
     // Calculate stress as combination of Angry, Fear, and Disgust
     const angry = (probs.Angry || 0) * 100;
     const fear = (probs.Fear || 0) * 100;
     const disgust = (probs.Disgust || 0) * 100;
-    const stressed = Math.round((angry * 0.6 + fear * 0.3 + disgust * 0.1));
+    const stressed = Math.round(angry * 0.6 + fear * 0.3 + disgust * 0.1);
 
     return {
       happy: happy,
@@ -237,7 +244,7 @@ class EmotionDetector {
       stressed: stressed,
       dominant: result.emotion,
       confidence: Math.round((result.confidence || 0) * 100),
-      allEmotions: probs
+      allEmotions: probs,
     };
   }
 
