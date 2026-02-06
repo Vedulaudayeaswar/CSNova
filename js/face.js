@@ -191,7 +191,26 @@ class EmotionDetector {
         body: JSON.stringify({ image: imageData }),
       });
 
+      if (!response.ok) {
+        throw new Error(
+          `Server error: ${response.status} ${response.statusText}`,
+        );
+      }
+
       const result = await response.json();
+
+      // Check for API errors
+      if (result.error) {
+        console.error("API Error:", result.error, result.details || "");
+        // Show error to user if it's a persistent issue (503)
+        if (response.status === 503) {
+          this.showErrorMessage(
+            "⚠️ Emotion detection service is temporarily unavailable. Please try again later.",
+          );
+          this.stopAnalysis();
+          return;
+        }
+      }
 
       // Update stats
       this.frameCount++;
@@ -586,6 +605,33 @@ class EmotionDetector {
     });
 
     return `${dateStr} at ${timeStr}`;
+  }
+
+  showErrorMessage(message) {
+    const errorDiv = document.createElement("div");
+    errorDiv.style.cssText = `
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #e74c3c;
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      z-index: 10000;
+      font-size: 1rem;
+      max-width: 500px;
+      text-align: center;
+    `;
+    errorDiv.textContent = message;
+    document.body.appendChild(errorDiv);
+
+    setTimeout(() => {
+      errorDiv.style.transition = "opacity 0.5s";
+      errorDiv.style.opacity = "0";
+      setTimeout(() => errorDiv.remove(), 500);
+    }, 5000);
   }
 }
 

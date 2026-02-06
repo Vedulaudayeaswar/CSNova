@@ -81,18 +81,42 @@ DB_FILE = os.environ.get('DATABASE_URL', 'career_guidance.db')
 # Load emotion detection model
 logger.info("Loading emotion detection model...")
 try:
-    if os.path.exists('senti_analy/emotion_cnn_fer2013.h5'):
-        emotion_model = load_model('senti_analy/emotion_cnn_fer2013.h5')
+    # Check multiple possible locations for the model file
+    model_paths = [
+        'emotion_cnn_fer2013.h5',  # Root directory
+        'senti_analy/emotion_cnn_fer2013.h5',  # Senti_analy folder
+    ]
+    
+    model_path = None
+    for path in model_paths:
+        if os.path.exists(path):
+            model_path = path
+            logger.info(f"Found emotion model at: {path}")
+            break
+    
+    if model_path:
+        emotion_model = load_model(model_path, compile=False)
         emotion_labels = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
         face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-        logger.info("Emotion detection model loaded successfully!")
+        
+        # Verify cascade loaded
+        if face_cascade.empty():
+            logger.error("Face cascade failed to load")
+            raise Exception("Haar cascade not found")
+            
+        logger.info("✅ Emotion detection model loaded successfully!")
     else:
-        logger.warning("Emotion model file not found - emotion detection disabled")
+        logger.warning("❌ Emotion model file not found in any location - emotion detection disabled")
+        logger.warning(f"Searched paths: {model_paths}")
+        logger.warning(f"Current directory: {os.getcwd()}")
+        logger.warning(f"Files in current dir: {os.listdir('.')}")
         emotion_model = None
         emotion_labels = []
         face_cascade = None
 except Exception as e:
-    logger.error(f"Could not load emotion model: {e}")
+    logger.error(f"❌ Could not load emotion model: {e}")
+    import traceback
+    logger.error(traceback.format_exc())
     emotion_model = None
     emotion_labels = []
     face_cascade = None
@@ -1121,11 +1145,16 @@ def explore_careers():
 
 
 @app.route('/api/emotion/detect', methods=['POST'])
+@limiter.limit("30 per minute")
 def detect_emotion():
     """Detect emotion from webcam frame using trained CNN model"""
     try:
         if not emotion_model or not face_cascade:
-            return jsonify({'error': 'Emotion detection model not available'}), 503
+            logger.error("Emotion detection requested but model not loaded")
+            return jsonify({
+                'error': 'Emotion detection model not available', 
+                'details': 'Model file not found on server. Please contact administrator.'
+            }), 503
         
         data = request.get_json()
         image_data = data.get('image')

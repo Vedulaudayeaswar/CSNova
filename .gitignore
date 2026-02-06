@@ -39,10 +39,14 @@ env/
 chroma_db/
 
 # Model checkpoints (too large for git)
-*.h5
+# *.h5  # COMMENTED OUT - we need emotion_cnn_fer2013.h5 for production!
 *.pt
 *.pth
 *.ckpt
+
+# BUT exclude transformer checkpoints (they're too large)
+tiny_transformer_lm/tiny_transformer_lm/checkpoints/*.pt
+tiny_transformer_lm/tiny_transformer_lm/checkpoints_structured/*.pt
 
 # IDE
 .vscode/
