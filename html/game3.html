@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>C$S - Academic Challenge</title>
+    <link rel="stylesheet" href="../css/game3.css" />
+    <style>
+      /* Glass transparent background for question popup */
+      #questionPopup {
+        background: rgba(255, 255, 255, 0.15) !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37) !important;
+        border-radius: 15px !important;
+      }
+
+      #timer {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 48px;
+        color: #ff9900;
+        font-weight: bold;
+        text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.9);
+        background: rgba(0, 0, 0, 0.5);
+        padding: 10px 20px;
+        border-radius: 10px;
+      }
+
+      #questionText {
+        color: #fff !important;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8) !important;
+        font-weight: bold !important;
+        font-size: 1.3em !important;
+      }
+
+      .answer-btn {
+        background: rgba(255, 255, 255, 0.2) !important;
+        backdrop-filter: blur(5px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.4) !important;
+        color: #fff !important;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8) !important;
+        font-weight: 600 !important;
+        transition: all 0.3s ease !important;
+      }
+
+      .answer-btn:hover {
+        background: rgba(255, 255, 255, 0.35) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+      }
+
+      .popup-header {
+        background: rgba(50, 205, 50, 0.4) !important;
+        backdrop-filter: blur(10px) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
+      }
+
+      .badge {
+        color: #fff !important;
+        font-weight: bold !important;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8) !important;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Site Logo -->
+    <div class="site-logo">C$S</div>
+
+    <!-- Music Toggle Button -->
+    <button
+      id="musicToggle"
+      class="music-btn"
+      onclick="toggleMusic()"
+      title="Toggle Music"
+    >
+      🎵
+    </button>
+
+    <!-- Background Music -->
+    <audio id="backgroundMusic" loop>
+      <source src="../sound/music3.mpeg" type="audio/mpeg" />
+    </audio>
+
+    <div id="gameContainer">
+      <canvas id="gameCanvas"></canvas>
+
+      <!-- HUD -->
+      <div id="hud">
+        <div id="score">ACADEMIC QUESTIONS: 0/15</div>
+        <div id="timer">10</div>
+        <div id="healthBar">
+          <div id="healthFill"></div>
+        </div>
+
+        <!-- Direction Arrow -->
+        <div id="directionArrow">
+          <div class="arrow-container">
+            <div class="arrow-pointer"></div>
+            <div class="arrow-distance">Distance: 0m</div>
+          </div>
+        </div>
+
+        <div id="controls">
+          <div>WASD/Arrows: Control Tank</div>
+          <div>SPACE: Fire Cannon</div>
+          <div>Mouse: Aim Turret</div>
+        </div>
+
+        <!-- Question Popup -->
+        <div id="questionPopup">
+          <div class="popup-header">
+            <span class="badge">Academic Challenge - 10 Seconds!</span>
+          </div>
+          <div id="questionText">Why does understanding concepts matter?</div>
+          <button class="answer-btn" onclick="selectAnswer(0)"></button>
+          <button class="answer-btn" onclick="selectAnswer(1)"></button>
+          <button class="answer-btn" onclick="selectAnswer(2)"></button>
+          <button class="answer-btn" onclick="selectAnswer(3)"></button>
+        </div>
+
+        <!-- Game Over -->
+        <div id="gameOver">
+          <h2 id="gameOverTitle">All Phases Complete!</h2>
+          <p id="gameOverText">
+            Analyzing your profile to recommend the best career...
+          </p>
+          <div class="game-stats">
+            <div class="stat">
+              <span class="stat-label">Questions Answered</span>
+              <span class="stat-value" id="finalScore">0</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Recommended Career</span>
+              <span class="stat-value" id="recommendedCareer">Loading...</span>
+            </div>
+          </div>
+          <div
+            id="careerDetails"
+            style="
+              margin: 20px;
+              padding: 20px;
+              background: rgba(255, 255, 255, 0.1);
+              border-radius: 10px;
+              display: none;
+              max-height: 400px;
+              overflow-y: auto;
+              overflow-x: hidden;
+            "
+          >
+            <h3 style="color: #fff; margin-bottom: 10px">Your Career Path</h3>
+            <div
+              id="careerPath"
+              style="color: #fff; text-align: left; white-space: pre-line"
+            ></div>
+            <div style="margin-top: 15px">
+              <strong style="color: #ffd700">Top 5 Career Matches:</strong>
+              <ol
+                id="careerMatches"
+                style="color: #fff; text-align: left; margin-top: 10px"
+              ></ol>
+            </div>
+          </div>
+          <button
+            id="viewDetailsBtn"
+            onclick="toggleCareerDetails()"
+            class="btn-restart"
+            style="display: none"
+          >
+            View Career Details
+          </button>
+          <button
+            id="downloadRoadmapBtn"
+            onclick="downloadCareerRoadmap()"
+            class="btn-download"
+            style="
+              display: none;
+              background: linear-gradient(135deg, #4caf50, #66bb6a);
+              margin: 0.5rem;
+            "
+          >
+            📥 Download Career Roadmap
+          </button>
+          <a href="/" class="btn-home">BACK TO HOME</a>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="../js/game3.js"></script>
+  </body>
+</html>

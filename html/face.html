@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Emotion Detection - C$S Career Advisor</title>
+    <link rel="stylesheet" href="../css/face.css" />
+  </head>
+  <body>
+    <!-- Site Logo -->
+    <div class="site-logo">C$S</div>
+
+    <!-- Navigation Back Button -->
+    <div class="nav-container">
+      <a href="/" class="btn-back">← Back to Home</a>
+    </div>
+
+    <!-- Main Container -->
+    <div class="emotion-container">
+      <div class="emotion-header">
+        <h1 class="emotion-title">EMOTION ANALYSIS</h1>
+        <p class="emotion-subtitle">
+          Let us understand your emotional patterns to provide better career
+          guidance
+        </p>
+      </div>
+
+      <!-- Camera Section -->
+      <div class="camera-section">
+        <div class="camera-wrapper">
+          <video id="video" autoplay muted playsinline></video>
+          <canvas id="canvas" style="display: none"></canvas>
+          <div class="loading-spinner" id="spinner">
+            <div class="spinner"></div>
+            <p>Loading Face Detection Models...</p>
+            <button
+              id="enableCameraBtn"
+              class="btn btn-primary"
+              style="display: none; margin-top: 1rem"
+            >
+              Enable Camera
+            </button>
+          </div>
+        </div>
+
+        <!-- Emotion Display -->
+        <div class="emotion-display">
+          <div class="emotion-meter">
+            <div class="meter-label">Current Emotion</div>
+            <div class="emotion-badge" id="emotionBadge">
+              <span class="emotion-icon">😊</span>
+              <span class="emotion-name">Detecting...</span>
+            </div>
+          </div>
+
+          <!-- Emotion Details -->
+          <div class="emotion-details">
+            <div class="detail-item">
+              <span class="detail-label">Happy</span>
+              <div class="detail-bar">
+                <div
+                  class="detail-fill happy"
+                  id="happyBar"
+                  style="width: 0%"
+                ></div>
+              </div>
+              <span class="detail-value" id="happyValue">0%</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Sad</span>
+              <div class="detail-bar">
+                <div
+                  class="detail-fill sad"
+                  id="sadBar"
+                  style="width: 0%"
+                ></div>
+              </div>
+              <span class="detail-value" id="sadValue">0%</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Stressed</span>
+              <div class="detail-bar">
+                <div
+                  class="detail-fill stressed"
+                  id="stressedBar"
+                  style="width: 0%"
+                ></div>
+              </div>
+              <span class="detail-value" id="stressedValue">0%</span>
+            </div>
+          </div>
+
+          <!-- Session Info -->
+          <div class="session-info">
+            <p>Session Time: <span id="sessionTime">00:00</span></p>
+            <p>Frames Analyzed: <span id="frameCount">0</span></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button id="startBtn" class="btn btn-primary">Start Analysis</button>
+        <button id="stopBtn" class="btn btn-secondary" style="display: none">
+          Stop Analysis
+        </button>
+        <button id="saveBtn" class="btn btn-success" style="display: none">
+          Save & Continue to Game
+        </button>
+      </div>
+
+      <!-- Results Section -->
+      <div class="results-section" id="resultsSection" style="display: none">
+        <div class="results-card">
+          <h3 class="results-title">Analysis Complete</h3>
+          <div class="results-stats">
+            <div class="stat-box">
+              <span class="stat-label">Dominant Emotion</span>
+              <span class="stat-value" id="dominantEmotion">--</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">Overall Stress Level</span>
+              <span class="stat-value" id="stressLevel">--</span>
+            </div>
+          </div>
+          <p class="results-note" id="resultsNote"></p>
+        </div>
+      </div>
+
+      <!-- History Section -->
+      <div class="history-section">
+        <h3 class="history-title">Recent Analyses</h3>
+        <div class="history-list" id="historyList">
+          <p class="empty-message">No analysis history yet</p>
+        </div>
+      </div>
+    </div>
+
+    <script src="../js/face.js"></script>
+  </body>
+</html>

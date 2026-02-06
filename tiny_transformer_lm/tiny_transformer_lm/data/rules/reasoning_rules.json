@@ -1,0 +1,10 @@
+{
+  "logic": ["why", "cause", "result", "lead"],
+  "analysis": ["analyze", "complex", "break down", "strategy"],
+  "decision": ["decide", "decision", "choose"],
+  "risk_reasoning": ["risk", "failure", "trade-off"],
+  "constraint": ["limited", "constraint", "restricted"],
+  "prediction": ["likely", "outcome", "happen"],
+  "efficiency": ["optimize", "efficient"],
+  "abstraction": ["pattern", "relate"]
+}

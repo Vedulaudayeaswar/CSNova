@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>C$S - Pirate Career Adventure</title>
+    <link rel="stylesheet" href="../css/game.css" />
+  </head>
+  <body>
+    <!-- Site Logo (matching index.html) -->
+    <div class="site-logo">C$S</div>
+
+    <!-- Music Toggle Button -->
+    <button
+      id="musicToggle"
+      class="music-btn"
+      onclick="toggleMusic()"
+      title="Toggle Music"
+    >
+      🎵
+    </button>
+
+    <!-- Background Music -->
+    <audio id="backgroundMusic" loop>
+      <source src="../sound/music1.mpeg" type="audio/mpeg" />
+    </audio>
+
+    <div id="gameContainer">
+      <canvas id="gameCanvas"></canvas>
+
+      <!-- HUD -->
+      <div id="hud">
+        <div id="score">SCORE: 0</div>
+        <div id="healthBar">
+          <div id="healthFill"></div>
+        </div>
+
+        <div id="controls">
+          <div>WASD/Arrows: Move Ship</div>
+          <div>SPACE: Fire Cannon</div>
+          <div>Mouse: Look Around</div>
+        </div>
+
+        <!-- Question Popup -->
+        <div id="questionPopup">
+          <div class="popup-header">
+            <span class="badge">C$S Career Question</span>
+          </div>
+          <div id="questionText"></div>
+          <button class="answer-btn" onclick="selectAnswer(0)"></button>
+          <button class="answer-btn" onclick="selectAnswer(1)"></button>
+          <button class="answer-btn" onclick="selectAnswer(2)"></button>
+          <button class="answer-btn" onclick="selectAnswer(3)"></button>
+        </div>
+
+        <!-- Game Over -->
+        <div id="gameOver">
+          <h2 id="gameOverTitle">VICTORY!</h2>
+          <p id="gameOverText">You reached the Navy patrol! Career unlocked!</p>
+          <div class="game-stats">
+            <div class="stat">
+              <span class="stat-label">Final Score</span>
+              <span class="stat-value" id="finalScore">0</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Questions Answered</span>
+              <span class="stat-value" id="finalQuestions">0</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Pirates Defeated</span>
+              <span class="stat-value" id="finalPirates">0</span>
+            </div>
+          </div>
+          <button onclick="restartGame()" class="btn-restart">
+            PLAY AGAIN
+          </button>
+          <a href="/" class="btn-home">BACK TO HOME</a>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="../js/game.js"></script>
+  </body>
+</html>

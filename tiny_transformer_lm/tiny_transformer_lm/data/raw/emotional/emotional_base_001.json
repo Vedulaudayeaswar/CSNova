@@ -1,0 +1,1323 @@
+[
+  {
+    "id": 1,
+    "eq": {"stress":"high","confidence":"low","empathy":"medium","risk":"low","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "When things suddenly go wrong, how do you usually react?",
+    "options": [
+      {"text":"I panic or feel overwhelmed","effects":{"stress":-2,"confidence":-1}},
+      {"text":"I stay calm and think through it","effects":{"stress":2,"confidence":2}},
+      {"text":"I act quickly and take risks","effects":{"risk":2,"stress":-1}},
+      {"text":"I look for help or support","effects":{"empathy":2,"confidence":1}}
+    ]
+  },
+  {
+    "id": 2,
+    "eq": {"stress":"low","confidence":"high","empathy":"medium","risk":"medium","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "How do you feel when plans change at the last moment?",
+    "options": [
+      {"text":"I feel stressed and lose focus","effects":{"stress":-2,"confidence":-1}},
+      {"text":"I adjust calmly to the change","effects":{"stress":2,"confidence":2}},
+      {"text":"I take bold action immediately","effects":{"risk":2,"stress":-1}},
+      {"text":"I ask others what they think","effects":{"empathy":2,"confidence":1}}
+    ]
+  },
+  {
+    "id": 3,
+    "eq": {"stress":"medium","confidence":"medium","empathy":"high","risk":"low","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "When someone near you feels upset, what do you usually do?",
+    "options": [
+      {"text":"I feel unsure and avoid the situation","effects":{"stress":-1,"confidence":-1}},
+      {"text":"I stay calm and listen","effects":{"stress":2,"confidence":1}},
+      {"text":"I push them to act quickly","effects":{"risk":1,"stress":-1}},
+      {"text":"I support and comfort them","effects":{"empathy":3,"confidence":1}}
+    ]
+  },
+  {
+    "id": 4,
+    "eq": {"stress":"low","confidence":"high","empathy":"low","risk":"high","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "Do uncertain situations excite you or make you cautious?",
+    "options": [
+      {"text":"They make me nervous","effects":{"stress":-2,"confidence":-1}},
+      {"text":"I stay balanced and think","effects":{"stress":1,"confidence":2}},
+      {"text":"They excite me","effects":{"risk":3,"stress":-1}},
+      {"text":"I ask others before acting","effects":{"empathy":1,"confidence":1}}
+    ]
+  },
+  {
+    "id": 5,
+    "eq": {"stress":"high","confidence":"medium","empathy":"low","risk":"medium","curiosity":"low"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "How do you behave when pressure keeps increasing?",
+    "options": [
+      {"text":"I feel overwhelmed","effects":{"stress":-2,"confidence":-1}},
+      {"text":"I slow down and focus","effects":{"stress":2,"confidence":2}},
+      {"text":"I push harder and act fast","effects":{"risk":2,"stress":-1}},
+      {"text":"I seek reassurance","effects":{"empathy":1,"confidence":1}}
+    ]
+  },
+
+  {
+    "id": 6,
+    "eq": {"stress":"low","confidence":"medium","empathy":"high","risk":"low","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "What do you usually do when you do not understand something?",
+    "options": [
+      {"text":"I feel stuck and stop trying","effects":{"stress":-1,"confidence":-1}},
+      {"text":"I think calmly and try again","effects":{"confidence":2}},
+      {"text":"I try something new quickly","effects":{"risk":1}},
+      {"text":"I ask someone for help","effects":{"empathy":2,"confidence":1}}
+    ]
+  },
+  {
+    "id": 7,
+    "eq": {"stress":"medium","confidence":"high","empathy":"low","risk":"medium","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "How do you decide when multiple choices seem possible?",
+    "options": [
+      {"text":"I get confused and delay","effects":{"stress":-1,"confidence":-1}},
+      {"text":"I analyze calmly","effects":{"confidence":2}},
+      {"text":"I choose fast and move on","effects":{"risk":2}},
+      {"text":"I discuss with others","effects":{"empathy":1,"confidence":1}}
+    ]
+  },
+  {
+    "id": 8,
+    "eq": {"stress":"low","confidence":"medium","empathy":"medium","risk":"low","curiosity":"low"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "Do you prefer clear instructions or freedom to choose?",
+    "options": [
+      {"text":"I prefer clear instructions","effects":{"confidence":1}},
+      {"text":"I balance both","effects":{"confidence":2}},
+      {"text":"I prefer full freedom","effects":{"risk":2}},
+      {"text":"I like guidance from others","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 9,
+    "eq": {"stress":"medium","confidence":"low","empathy":"medium","risk":"low","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "How do you feel after making a small mistake?",
+    "options": [
+      {"text":"I feel upset and stressed","effects":{"stress":-2,"confidence":-1}},
+      {"text":"I accept it calmly","effects":{"confidence":2}},
+      {"text":"I ignore it and move on","effects":{"risk":1}},
+      {"text":"I talk to someone about it","effects":{"empathy":2}}
+    ]
+  },
+  {
+    "id": 10,
+    "eq": {"stress":"low","confidence":"high","empathy":"low","risk":"high","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "Do you enjoy taking risks when outcomes are uncertain?",
+    "options": [
+      {"text":"No, it makes me anxious","effects":{"stress":-1}},
+      {"text":"Only after thinking carefully","effects":{"confidence":2}},
+      {"text":"Yes, I enjoy it","effects":{"risk":3}},
+      {"text":"I prefer shared decisions","effects":{"empathy":1}}
+    ]
+  },
+
+  {
+    "id": 11,
+    "eq": {"stress":"high","confidence":"low","empathy":"high","risk":"low","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "How do you react when others depend on you during stress?",
+    "options": [
+      {"text":"I feel pressured","effects":{"stress":-2}},
+      {"text":"I stay calm and try my best","effects":{"confidence":2}},
+      {"text":"I act fast to solve it","effects":{"risk":1}},
+      {"text":"I focus on supporting them","effects":{"empathy":3}}
+    ]
+  },
+  {
+    "id": 12,
+    "eq": {"stress":"medium","confidence":"medium","empathy":"medium","risk":"medium","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "What comes to your mind first when facing a challenge?",
+    "options": [
+      {"text":"Fear of failure","effects":{"stress":-1}},
+      {"text":"Ways to solve it","effects":{"confidence":2}},
+      {"text":"Taking action quickly","effects":{"risk":1}},
+      {"text":"Who can help","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 13,
+    "eq": {"stress":"low","confidence":"high","empathy":"high","risk":"low","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "Do you like helping others even when it costs time?",
+    "options": [
+      {"text":"Not really","effects":{"confidence":-1}},
+      {"text":"Yes, if possible","effects":{"confidence":1}},
+      {"text":"Only if urgent","effects":{"risk":1}},
+      {"text":"Yes, always","effects":{"empathy":3}}
+    ]
+  },
+  {
+    "id": 14,
+    "eq": {"stress":"high","confidence":"medium","empathy":"low","risk":"medium","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "How do you act when time is short and decisions matter?",
+    "options": [
+      {"text":"I panic","effects":{"stress":-2}},
+      {"text":"I focus and decide","effects":{"confidence":2}},
+      {"text":"I act immediately","effects":{"risk":2}},
+      {"text":"I seek quick advice","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 15,
+    "eq": {"stress":"medium","confidence":"low","empathy":"medium","risk":"low","curiosity":"low"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "Do you feel comfortable asking others for help?",
+    "options": [
+      {"text":"No, I avoid it","effects":{"confidence":-1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"Only if necessary","effects":{"risk":1}},
+      {"text":"Yes, I ask freely","effects":{"empathy":2}}
+    ]
+  },
+
+  {
+    "id": 16,
+    "eq": {"stress":"low","confidence":"medium","empathy":"high","risk":"low","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "What motivates you to continue during difficult moments?",
+    "options": [
+      {"text":"Fear of failure","effects":{"stress":-1}},
+      {"text":"Inner confidence","effects":{"confidence":2}},
+      {"text":"Challenge itself","effects":{"risk":1}},
+      {"text":"Support from others","effects":{"empathy":2}}
+    ]
+  },
+  {
+    "id": 17,
+    "eq": {"stress":"medium","confidence":"high","empathy":"low","risk":"high","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "How do you feel about taking responsibility for outcomes?",
+    "options": [
+      {"text":"I avoid it","effects":{"confidence":-1}},
+      {"text":"I accept it calmly","effects":{"confidence":2}},
+      {"text":"I enjoy it","effects":{"risk":2}},
+      {"text":"I share it with others","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 18,
+    "eq": {"stress":"high","confidence":"low","empathy":"medium","risk":"low","curiosity":"low"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "What do you usually do when you feel overwhelmed?",
+    "options": [
+      {"text":"I shut down","effects":{"stress":-2}},
+      {"text":"I pause and breathe","effects":{"confidence":1}},
+      {"text":"I push through","effects":{"risk":1}},
+      {"text":"I seek comfort","effects":{"empathy":2}}
+    ]
+  },
+  {
+    "id": 19,
+    "eq": {"stress":"low","confidence":"high","empathy":"medium","risk":"medium","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "Do challenges help you focus or distract you?",
+    "options": [
+      {"text":"They distract me","effects":{"stress":-1}},
+      {"text":"They sharpen focus","effects":{"confidence":2}},
+      {"text":"They push me to act fast","effects":{"risk":1}},
+      {"text":"They bring teamwork","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 20,
+    "eq": {"stress":"medium","confidence":"medium","empathy":"high","risk":"low","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "How important is teamwork to you in tough situations?",
+    "options": [
+      {"text":"Not very important","effects":{"confidence":-1}},
+      {"text":"Somewhat important","effects":{"confidence":1}},
+      {"text":"Important when needed","effects":{"risk":1}},
+      {"text":"Very important","effects":{"empathy":3}}
+    ]
+  }
+  ,
+  {
+    "id": 21,
+    "eq": {"stress":"high","confidence":"medium","empathy":"low","risk":"high","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "Do you act quickly or think carefully under pressure?",
+    "options": [
+      {"text":"I panic and rush","effects":{"stress":-2,"confidence":-1}},
+      {"text":"I think carefully","effects":{"confidence":2}},
+      {"text":"I act fast","effects":{"risk":2}},
+      {"text":"I ask others","effects":{"empathy":1,"confidence":1}}
+    ]
+  },
+  {
+    "id": 22,
+    "eq": {"stress":"low","confidence":"high","empathy":"medium","risk":"low","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "How confident do you feel starting something new?",
+    "options": [
+      {"text":"Not confident at all","effects":{"confidence":-2}},
+      {"text":"Somewhat confident","effects":{"confidence":1}},
+      {"text":"Very confident","effects":{"confidence":3}},
+      {"text":"Confident with support","effects":{"empathy":1,"confidence":1}}
+    ]
+  },
+  {
+    "id": 23,
+    "eq": {"stress":"medium","confidence":"low","empathy":"high","risk":"low","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "Do you think about your feelings after stressful events?",
+    "options": [
+      {"text":"I avoid thinking about them","effects":{"confidence":-1}},
+      {"text":"I reflect calmly","effects":{"confidence":2}},
+      {"text":"I move on quickly","effects":{"risk":1}},
+      {"text":"I discuss them with others","effects":{"empathy":2}}
+    ]
+  },
+  {
+    "id": 24,
+    "eq": {"stress":"low","confidence":"medium","empathy":"low","risk":"high","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "Do fast-paced situations excite you or worry you?",
+    "options": [
+      {"text":"They worry me","effects":{"stress":-1}},
+      {"text":"I stay balanced","effects":{"confidence":1}},
+      {"text":"They excite me","effects":{"risk":3}},
+      {"text":"I prefer shared action","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 25,
+    "eq": {"stress":"high","confidence":"low","empathy":"medium","risk":"low","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "How do you react when plans do not work out?",
+    "options": [
+      {"text":"I feel stressed","effects":{"stress":-2}},
+      {"text":"I adjust calmly","effects":{"confidence":2}},
+      {"text":"I change plans quickly","effects":{"risk":1}},
+      {"text":"I ask for support","effects":{"empathy":2}}
+    ]
+  },
+
+  {
+    "id": 26,
+    "eq": {"stress":"medium","confidence":"medium","empathy":"medium","risk":"medium","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "Do you prefer learning from mistakes or avoiding them?",
+    "options": [
+      {"text":"I try to avoid mistakes","effects":{"confidence":-1}},
+      {"text":"I learn calmly from them","effects":{"confidence":2}},
+      {"text":"I take risks to learn","effects":{"risk":2}},
+      {"text":"I learn by discussing with others","effects":{"empathy":1,"confidence":1}}
+    ]
+  },
+  {
+    "id": 27,
+    "eq": {"stress":"low","confidence":"high","empathy":"high","risk":"low","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "How do you support others during challenging times?",
+    "options": [
+      {"text":"I feel unsure","effects":{"confidence":-1}},
+      {"text":"I stay calm and help","effects":{"confidence":2}},
+      {"text":"I push them to act","effects":{"risk":1}},
+      {"text":"I listen and comfort","effects":{"empathy":3}}
+    ]
+  },
+  {
+    "id": 28,
+    "eq": {"stress":"high","confidence":"medium","empathy":"low","risk":"high","curiosity":"low"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "Do stressful situations push you to act or pause?",
+    "options": [
+      {"text":"I freeze","effects":{"stress":-1}},
+      {"text":"I pause and think","effects":{"confidence":2}},
+      {"text":"I act immediately","effects":{"risk":2}},
+      {"text":"I look for guidance","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 29,
+    "eq": {"stress":"medium","confidence":"low","empathy":"medium","risk":"low","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "Do you enjoy thinking deeply about your reactions?",
+    "options": [
+      {"text":"Not really","effects":{"confidence":-1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"Yes, often","effects":{"curiosity":2}},
+      {"text":"With others help","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 30,
+    "eq": {"stress":"low","confidence":"high","empathy":"low","risk":"medium","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "How comfortable are you with uncertain results?",
+    "options": [
+      {"text":"Very uncomfortable","effects":{"stress":-1}},
+      {"text":"Somewhat comfortable","effects":{"confidence":1}},
+      {"text":"Very comfortable","effects":{"risk":2}},
+      {"text":"Comfortable with support","effects":{"empathy":1}}
+    ]
+  },
+
+  {
+    "id": 31,
+    "eq": {"stress":"high","confidence":"low","empathy":"high","risk":"low","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "What helps you calm down during intense moments?",
+    "options": [
+      {"text":"Nothing helps","effects":{"stress":-2}},
+      {"text":"Breathing and focus","effects":{"confidence":1}},
+      {"text":"Taking action","effects":{"risk":1}},
+      {"text":"Talking to someone","effects":{"empathy":2}}
+    ]
+  },
+  {
+    "id": 32,
+    "eq": {"stress":"medium","confidence":"medium","empathy":"low","risk":"high","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "Do you trust instincts or careful thinking more?",
+    "options": [
+      {"text":"I get confused","effects":{"confidence":-1}},
+      {"text":"Careful thinking","effects":{"confidence":2}},
+      {"text":"Instincts","effects":{"risk":2}},
+      {"text":"Others opinions","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 33,
+    "eq": {"stress":"low","confidence":"high","empathy":"medium","risk":"low","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "Do you feel energized by emotional challenges?",
+    "options": [
+      {"text":"No, they drain me","effects":{"stress":-1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"Yes, they excite me","effects":{"risk":1}},
+      {"text":"With team support","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 34,
+    "eq": {"stress":"high","confidence":"medium","empathy":"medium","risk":"medium","curiosity":"low"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "How do you handle emotionally heavy situations?",
+    "options": [
+      {"text":"I feel overwhelmed","effects":{"stress":-2}},
+      {"text":"I stay composed","effects":{"confidence":2}},
+      {"text":"I push through","effects":{"risk":1}},
+      {"text":"I seek support","effects":{"empathy":2}}
+    ]
+  },
+  {
+    "id": 35,
+    "eq": {"stress":"medium","confidence":"low","empathy":"high","risk":"low","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "Do you try to understand others before reacting?",
+    "options": [
+      {"text":"Not usually","effects":{"confidence":-1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"Only when needed","effects":{"risk":1}},
+      {"text":"Yes, always","effects":{"empathy":3}}
+    ]
+  },
+
+  {
+    "id": 36,
+    "eq": {"stress":"low","confidence":"medium","empathy":"low","risk":"high","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "Do you enjoy taking control during chaos?",
+    "options": [
+      {"text":"No, I avoid it","effects":{"confidence":-1}},
+      {"text":"Only if needed","effects":{"confidence":1}},
+      {"text":"Yes, I enjoy it","effects":{"risk":3}},
+      {"text":"With team support","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 37,
+    "eq": {"stress":"high","confidence":"low","empathy":"medium","risk":"low","curiosity":"low"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "How do you feel when many tasks demand attention?",
+    "options": [
+      {"text":"Very stressed","effects":{"stress":-2}},
+      {"text":"I prioritize calmly","effects":{"confidence":1}},
+      {"text":"I rush through","effects":{"risk":1}},
+      {"text":"I ask for help","effects":{"empathy":2}}
+    ]
+  },
+  {
+    "id": 38,
+    "eq": {"stress":"medium","confidence":"high","empathy":"medium","risk":"medium","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "Do challenges help you discover your strengths?",
+    "options": [
+      {"text":"No, they discourage me","effects":{"confidence":-1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"Yes, often","effects":{"risk":1}},
+      {"text":"With others feedback","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 39,
+    "eq": {"stress":"low","confidence":"high","empathy":"high","risk":"low","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "Do you feel responsible for others emotions?",
+    "options": [
+      {"text":"Not really","effects":{"confidence":-1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"Only in close cases","effects":{"risk":1}},
+      {"text":"Yes, I care deeply","effects":{"empathy":3}}
+    ]
+  },
+  {
+    "id": 40,
+    "eq": {"stress":"high","confidence":"medium","empathy":"low","risk":"high","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "How do you act when success needs fast decisions?",
+    "options": [
+      {"text":"I hesitate","effects":{"confidence":-1}},
+      {"text":"I decide calmly","effects":{"confidence":2}},
+      {"text":"I act fast","effects":{"risk":2}},
+      {"text":"I consult others","effects":{"empathy":1}}
+    ]
+  }
+  ,
+  {
+    "id": 41,
+    "eq": {"stress":"medium","confidence":"medium","empathy":"medium","risk":"low","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "Do you like understanding why you feel a certain way?",
+    "options": [
+      {"text":"Not really","effects":{"confidence":-1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"Yes, I think deeply","effects":{"curiosity":2}},
+      {"text":"I discuss it with others","effects":{"empathy":2}}
+    ]
+  },
+  {
+    "id": 42,
+    "eq": {"stress":"low","confidence":"high","empathy":"low","risk":"high","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "Do you enjoy working well under emotional pressure?",
+    "options": [
+      {"text":"No, it overwhelms me","effects":{"stress":-1}},
+      {"text":"I manage it calmly","effects":{"confidence":2}},
+      {"text":"Yes, it excites me","effects":{"risk":2}},
+      {"text":"With team support","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 43,
+    "eq": {"stress":"high","confidence":"low","empathy":"high","risk":"low","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "What do you do when emotions slow you down?",
+    "options": [
+      {"text":"I shut down","effects":{"stress":-2}},
+      {"text":"I pause and refocus","effects":{"confidence":1}},
+      {"text":"I push harder","effects":{"risk":1}},
+      {"text":"I seek emotional support","effects":{"empathy":2}}
+    ]
+  },
+  {
+    "id": 44,
+    "eq": {"stress":"medium","confidence":"medium","empathy":"low","risk":"medium","curiosity":"low"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "Do you prefer predictable routines or flexible plans?",
+    "options": [
+      {"text":"Predictable routines","effects":{"confidence":1}},
+      {"text":"A mix of both","effects":{"confidence":2}},
+      {"text":"Flexible plans","effects":{"risk":2}},
+      {"text":"Plans made with others","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 45,
+    "eq": {"stress":"low","confidence":"high","empathy":"medium","risk":"medium","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "How do you feel about making decisions without full clarity?",
+    "options": [
+      {"text":"It stresses me","effects":{"stress":-1}},
+      {"text":"I think calmly","effects":{"confidence":2}},
+      {"text":"I decide and adjust later","effects":{"risk":2}},
+      {"text":"I seek quick input","effects":{"empathy":1}}
+    ]
+  },
+
+  {
+    "id": 46,
+    "eq": {"stress":"high","confidence":"medium","empathy":"low","risk":"low","curiosity":"low"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "Do stressful moments reduce your confidence?",
+    "options": [
+      {"text":"Yes, a lot","effects":{"confidence":-2}},
+      {"text":"A little","effects":{"confidence":-1}},
+      {"text":"Not much","effects":{"confidence":1}},
+      {"text":"I rely on others","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 47,
+    "eq": {"stress":"medium","confidence":"high","empathy":"high","risk":"low","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "Do you feel satisfied when helping others succeed?",
+    "options": [
+      {"text":"Not really","effects":{"confidence":-1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"Yes, often","effects":{"confidence":2}},
+      {"text":"Yes, deeply","effects":{"empathy":3}}
+    ]
+  },
+  {
+    "id": 48,
+    "eq": {"stress":"low","confidence":"medium","empathy":"low","risk":"high","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "Do you like acting quickly rather than waiting?",
+    "options": [
+      {"text":"No, I wait","effects":{"confidence":1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"Yes, I act fast","effects":{"risk":3}},
+      {"text":"With others agreement","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 49,
+    "eq": {"stress":"high","confidence":"low","empathy":"medium","risk":"low","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "What is your first reaction when something goes wrong?",
+    "options": [
+      {"text":"Panic","effects":{"stress":-2}},
+      {"text":"Stay calm","effects":{"confidence":2}},
+      {"text":"Act immediately","effects":{"risk":1}},
+      {"text":"Ask for help","effects":{"empathy":2}}
+    ]
+  },
+  {
+    "id": 50,
+    "eq": {"stress":"medium","confidence":"medium","empathy":"high","risk":"low","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "Do difficult moments help you learn about yourself?",
+    "options": [
+      {"text":"No, they discourage me","effects":{"confidence":-1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"Yes, often","effects":{"curiosity":2}},
+      {"text":"Yes, through others","effects":{"empathy":1}}
+    ]
+  },
+
+  {
+    "id": 51,
+    "eq": {"stress":"low","confidence":"high","empathy":"medium","risk":"medium","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "How confident are you handling unexpected situations?",
+    "options": [
+      {"text":"Not confident","effects":{"confidence":-2}},
+      {"text":"Somewhat confident","effects":{"confidence":1}},
+      {"text":"Very confident","effects":{"confidence":3}},
+      {"text":"Confident with support","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 52,
+    "eq": {"stress":"high","confidence":"low","empathy":"high","risk":"low","curiosity":"low"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "Do you seek support when emotions feel overwhelming?",
+    "options": [
+      {"text":"No, I avoid it","effects":{"confidence":-1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"Only when needed","effects":{"risk":1}},
+      {"text":"Yes, always","effects":{"empathy":3}}
+    ]
+  },
+  {
+    "id": 53,
+    "eq": {"stress":"medium","confidence":"medium","empathy":"low","risk":"high","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "Do emotional challenges push you to take risks?",
+    "options": [
+      {"text":"No, I withdraw","effects":{"confidence":-1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"Yes, often","effects":{"risk":3}},
+      {"text":"Only with support","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 54,
+    "eq": {"stress":"low","confidence":"high","empathy":"high","risk":"low","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "How important is emotional balance in your life?",
+    "options": [
+      {"text":"Not important","effects":{"confidence":-1}},
+      {"text":"Somewhat important","effects":{"confidence":1}},
+      {"text":"Very important","effects":{"confidence":2}},
+      {"text":"Essential for relationships","effects":{"empathy":2}}
+    ]
+  },
+  {
+    "id": 55,
+    "eq": {"stress":"high","confidence":"medium","empathy":"low","risk":"medium","curiosity":"low"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "How do you act when stress builds slowly?",
+    "options": [
+      {"text":"I ignore it","effects":{"confidence":-1}},
+      {"text":"I manage it gradually","effects":{"confidence":2}},
+      {"text":"I push through","effects":{"risk":1}},
+      {"text":"I talk it out","effects":{"empathy":1}}
+    ]
+  },
+
+  {
+    "id": 56,
+    "eq": {"stress":"medium","confidence":"low","empathy":"medium","risk":"low","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "Do you hesitate when emotions create confusion?",
+    "options": [
+      {"text":"Yes, often","effects":{"confidence":-1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"Rarely","effects":{"confidence":2}},
+      {"text":"I ask for clarity","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 57,
+    "eq": {"stress":"low","confidence":"high","empathy":"low","risk":"high","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "Do intense situations motivate you to perform better?",
+    "options": [
+      {"text":"No, they stress me","effects":{"stress":-1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"Yes, they push me","effects":{"risk":2}},
+      {"text":"With team effort","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 58,
+    "eq": {"stress":"high","confidence":"low","empathy":"medium","risk":"low","curiosity":"low"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "What do you do when emotional pressure feels too much?",
+    "options": [
+      {"text":"I shut down","effects":{"stress":-2}},
+      {"text":"I pause and recover","effects":{"confidence":1}},
+      {"text":"I force myself","effects":{"risk":1}},
+      {"text":"I seek comfort","effects":{"empathy":2}}
+    ]
+  },
+  {
+    "id": 59,
+    "eq": {"stress":"medium","confidence":"medium","empathy":"high","risk":"low","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "Do you reflect on emotional experiences later?",
+    "options": [
+      {"text":"No, I forget them","effects":{"confidence":-1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"Yes, often","effects":{"curiosity":2}},
+      {"text":"With others discussion","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 60,
+    "eq": {"stress":"low","confidence":"high","empathy":"medium","risk":"medium","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "How comfortable are you with emotional uncertainty?",
+    "options": [
+      {"text":"Very uncomfortable","effects":{"stress":-1}},
+      {"text":"Somewhat comfortable","effects":{"confidence":1}},
+      {"text":"Very comfortable","effects":{"risk":2}},
+      {"text":"Comfortable with support","effects":{"empathy":1}}
+    ]
+  }
+  ,
+    {
+    "id": 61,
+    "eq": {"stress":"high","confidence":"low","empathy":"high","risk":"low","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "What helps you regain calm after stress?",
+    "options": [
+      {"text":"Nothing really helps","effects":{"stress":-2}},
+      {"text":"Pausing and thinking","effects":{"confidence":1}},
+      {"text":"Taking quick action","effects":{"risk":1}},
+      {"text":"Talking to someone","effects":{"empathy":2}}
+    ]
+  },
+  {
+    "id": 62,
+    "eq": {"stress":"medium","confidence":"medium","empathy":"low","risk":"high","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "Do you rely more on logic or feelings under pressure?",
+    "options": [
+      {"text":"Feelings control me","effects":{"confidence":-1}},
+      {"text":"Mostly logic","effects":{"confidence":2}},
+      {"text":"I trust instincts","effects":{"risk":2}},
+      {"text":"I ask others opinions","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 63,
+    "eq": {"stress":"low","confidence":"high","empathy":"medium","risk":"low","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "Do emotional challenges make you feel energized?",
+    "options": [
+      {"text":"No, they drain me","effects":{"stress":-1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"Yes, often","effects":{"risk":1}},
+      {"text":"With support","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 64,
+    "eq": {"stress":"high","confidence":"medium","empathy":"medium","risk":"medium","curiosity":"low"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "How do you manage situations that feel emotionally heavy?",
+    "options": [
+      {"text":"I feel overwhelmed","effects":{"stress":-2}},
+      {"text":"I stay composed","effects":{"confidence":2}},
+      {"text":"I push through","effects":{"risk":1}},
+      {"text":"I seek emotional support","effects":{"empathy":2}}
+    ]
+  },
+  {
+    "id": 65,
+    "eq": {"stress":"medium","confidence":"low","empathy":"high","risk":"low","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "Do you pause to understand others before responding?",
+    "options": [
+      {"text":"Rarely","effects":{"confidence":-1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"Only if needed","effects":{"risk":1}},
+      {"text":"Yes, always","effects":{"empathy":3}}
+    ]
+  },
+
+  {
+    "id": 66,
+    "eq": {"stress":"low","confidence":"medium","empathy":"low","risk":"high","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "Do you enjoy leading during stressful moments?",
+    "options": [
+      {"text":"No, I avoid it","effects":{"confidence":-1}},
+      {"text":"Only if required","effects":{"confidence":1}},
+      {"text":"Yes, I enjoy it","effects":{"risk":3}},
+      {"text":"With team support","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 67,
+    "eq": {"stress":"high","confidence":"low","empathy":"medium","risk":"low","curiosity":"low"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "How do you feel when many emotions compete for attention?",
+    "options": [
+      {"text":"Very stressed","effects":{"stress":-2}},
+      {"text":"I slow down","effects":{"confidence":1}},
+      {"text":"I act fast","effects":{"risk":1}},
+      {"text":"I talk it out","effects":{"empathy":2}}
+    ]
+  },
+  {
+    "id": 68,
+    "eq": {"stress":"medium","confidence":"high","empathy":"medium","risk":"medium","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "Do emotional challenges help you grow stronger?",
+    "options": [
+      {"text":"No, they weaken me","effects":{"confidence":-1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"Yes, often","effects":{"risk":1}},
+      {"text":"With others support","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 69,
+    "eq": {"stress":"low","confidence":"high","empathy":"high","risk":"low","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "Do you feel responsible for supporting others emotionally?",
+    "options": [
+      {"text":"Not really","effects":{"confidence":-1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"Only close ones","effects":{"risk":1}},
+      {"text":"Yes, deeply","effects":{"empathy":3}}
+    ]
+  },
+  {
+    "id": 70,
+    "eq": {"stress":"high","confidence":"medium","empathy":"low","risk":"high","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "How do you act when emotions demand fast responses?",
+    "options": [
+      {"text":"I freeze","effects":{"confidence":-1}},
+      {"text":"I stay calm","effects":{"confidence":2}},
+      {"text":"I act immediately","effects":{"risk":2}},
+      {"text":"I consult others","effects":{"empathy":1}}
+    ]
+  },
+
+  {
+    "id": 71,
+    "eq": {"stress":"medium","confidence":"medium","empathy":"medium","risk":"low","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "Do you like understanding emotional patterns in yourself?",
+    "options": [
+      {"text":"Not really","effects":{"confidence":-1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"Yes, often","effects":{"curiosity":2}},
+      {"text":"Through discussion","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 72,
+    "eq": {"stress":"low","confidence":"high","empathy":"low","risk":"high","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "Do you enjoy emotionally demanding environments?",
+    "options": [
+      {"text":"No, I avoid them","effects":{"stress":-1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"Yes, I enjoy them","effects":{"risk":3}},
+      {"text":"Only with support","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 73,
+    "eq": {"stress":"high","confidence":"low","empathy":"high","risk":"low","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "What do you do when emotions affect your focus?",
+    "options": [
+      {"text":"I lose focus","effects":{"confidence":-1}},
+      {"text":"I refocus calmly","effects":{"confidence":2}},
+      {"text":"I push harder","effects":{"risk":1}},
+      {"text":"I seek support","effects":{"empathy":2}}
+    ]
+  },
+  {
+    "id": 74,
+    "eq": {"stress":"medium","confidence":"medium","empathy":"low","risk":"medium","curiosity":"low"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "Do you prefer emotional stability or excitement?",
+    "options": [
+      {"text":"Stability","effects":{"confidence":1}},
+      {"text":"A balance","effects":{"confidence":2}},
+      {"text":"Excitement","effects":{"risk":2}},
+      {"text":"Shared excitement","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 75,
+    "eq": {"stress":"low","confidence":"high","empathy":"medium","risk":"medium","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "How do you balance emotions while making decisions?",
+    "options": [
+      {"text":"I get confused","effects":{"confidence":-1}},
+      {"text":"I think calmly","effects":{"confidence":2}},
+      {"text":"I act confidently","effects":{"risk":2}},
+      {"text":"I discuss with others","effects":{"empathy":1}}
+    ]
+  },
+
+  {
+    "id": 76,
+    "eq": {"stress":"high","confidence":"medium","empathy":"low","risk":"low","curiosity":"low"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "Do emotional setbacks affect your motivation?",
+    "options": [
+      {"text":"Yes, a lot","effects":{"confidence":-2}},
+      {"text":"A little","effects":{"confidence":-1}},
+      {"text":"Not much","effects":{"confidence":1}},
+      {"text":"I rely on support","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 77,
+    "eq": {"stress":"medium","confidence":"high","empathy":"high","risk":"low","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "Do you feel fulfilled when supporting others emotionally?",
+    "options": [
+      {"text":"Not really","effects":{"confidence":-1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"Yes, often","effects":{"confidence":2}},
+      {"text":"Yes, deeply","effects":{"empathy":3}}
+    ]
+  },
+  {
+    "id": 78,
+    "eq": {"stress":"low","confidence":"medium","empathy":"low","risk":"high","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "Do strong emotions push you to act quickly?",
+    "options": [
+      {"text":"No, I slow down","effects":{"confidence":1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"Yes, immediately","effects":{"risk":3}},
+      {"text":"Only with guidance","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 79,
+    "eq": {"stress":"high","confidence":"low","empathy":"medium","risk":"low","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "What do you do after an emotionally difficult moment?",
+    "options": [
+      {"text":"I shut down","effects":{"stress":-2}},
+      {"text":"I recover calmly","effects":{"confidence":1}},
+      {"text":"I move on fast","effects":{"risk":1}},
+      {"text":"I talk it out","effects":{"empathy":2}}
+    ]
+  },
+  {
+    "id": 80,
+    "eq": {"stress":"medium","confidence":"medium","empathy":"high","risk":"low","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "Do emotional experiences help you understand yourself better?",
+    "options": [
+      {"text":"No, not really","effects":{"confidence":-1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"Yes, often","effects":{"curiosity":2}},
+      {"text":"Through others feedback","effects":{"empathy":1}}
+    ]
+  }
+  ,
+  {
+    "id": 81,
+    "eq": {"stress":"low","confidence":"high","empathy":"medium","risk":"medium","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "How steady do you feel during emotional challenges?",
+    "options": [
+      {"text":"Not steady at all","effects":{"confidence":-2}},
+      {"text":"Somewhat steady","effects":{"confidence":1}},
+      {"text":"Very steady","effects":{"confidence":3}},
+      {"text":"Steady with support","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 82,
+    "eq": {"stress":"high","confidence":"low","empathy":"high","risk":"low","curiosity":"low"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "Do you feel drained or relieved after emotional stress?",
+    "options": [
+      {"text":"Very drained","effects":{"stress":-2}},
+      {"text":"Somewhat drained","effects":{"stress":-1}},
+      {"text":"Mostly relieved","effects":{"confidence":1}},
+      {"text":"Relieved with support","effects":{"empathy":2}}
+    ]
+  },
+  {
+    "id": 83,
+    "eq": {"stress":"medium","confidence":"medium","empathy":"low","risk":"high","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "Do emotions influence your willingness to take risks?",
+    "options": [
+      {"text":"They stop me","effects":{"confidence":-1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"Yes, they push me","effects":{"risk":3}},
+      {"text":"Only with support","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 84,
+    "eq": {"stress":"low","confidence":"high","empathy":"high","risk":"low","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "How important is empathy in your daily interactions?",
+    "options": [
+      {"text":"Not important","effects":{"confidence":-1}},
+      {"text":"Somewhat important","effects":{"confidence":1}},
+      {"text":"Very important","effects":{"confidence":2}},
+      {"text":"Essential","effects":{"empathy":3}}
+    ]
+  },
+  {
+    "id": 85,
+    "eq": {"stress":"high","confidence":"medium","empathy":"low","risk":"medium","curiosity":"low"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "How do you manage emotions when stress lasts long?",
+    "options": [
+      {"text":"I feel exhausted","effects":{"stress":-2}},
+      {"text":"I manage steadily","effects":{"confidence":2}},
+      {"text":"I push through","effects":{"risk":1}},
+      {"text":"I talk it out","effects":{"empathy":1}}
+    ]
+  },
+
+  {
+    "id": 86,
+    "eq": {"stress":"medium","confidence":"low","empathy":"medium","risk":"low","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "Do you slow down when emotions become confusing?",
+    "options": [
+      {"text":"No, I rush","effects":{"risk":1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"Yes, I slow down","effects":{"confidence":2}},
+      {"text":"I ask for clarity","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 87,
+    "eq": {"stress":"low","confidence":"high","empathy":"low","risk":"high","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "Do emotional challenges make you feel more alive?",
+    "options": [
+      {"text":"No, they drain me","effects":{"stress":-1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"Yes, strongly","effects":{"risk":3}},
+      {"text":"With others","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 88,
+    "eq": {"stress":"high","confidence":"low","empathy":"medium","risk":"low","curiosity":"low"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "What helps you recover after emotional overload?",
+    "options": [
+      {"text":"Nothing helps","effects":{"stress":-2}},
+      {"text":"Rest and reflection","effects":{"confidence":1}},
+      {"text":"Keeping busy","effects":{"risk":1}},
+      {"text":"Talking to someone","effects":{"empathy":2}}
+    ]
+  },
+  {
+    "id": 89,
+    "eq": {"stress":"medium","confidence":"medium","empathy":"high","risk":"low","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "Do you learn emotional lessons from past experiences?",
+    "options": [
+      {"text":"No, I move on","effects":{"confidence":-1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"Yes, often","effects":{"curiosity":2}},
+      {"text":"By discussing them","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 90,
+    "eq": {"stress":"low","confidence":"high","empathy":"medium","risk":"medium","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "How comfortable are you handling emotional conflicts?",
+    "options": [
+      {"text":"Very uncomfortable","effects":{"confidence":-1}},
+      {"text":"Somewhat comfortable","effects":{"confidence":1}},
+      {"text":"Very comfortable","effects":{"risk":2}},
+      {"text":"Comfortable with support","effects":{"empathy":1}}
+    ]
+  },
+
+  {
+    "id": 91,
+    "eq": {"stress":"high","confidence":"low","empathy":"high","risk":"low","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "Do you seek calm before responding emotionally?",
+    "options": [
+      {"text":"No, I react fast","effects":{"risk":1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"Yes, usually","effects":{"confidence":2}},
+      {"text":"I seek reassurance","effects":{"empathy":2}}
+    ]
+  },
+  {
+    "id": 92,
+    "eq": {"stress":"medium","confidence":"medium","empathy":"low","risk":"high","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "Do emotions drive your decisions more than logic?",
+    "options": [
+      {"text":"Yes, mostly","effects":{"risk":1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"Rarely","effects":{"confidence":2}},
+      {"text":"I ask others","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 93,
+    "eq": {"stress":"low","confidence":"high","empathy":"medium","risk":"low","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "Do emotional challenges sharpen your focus?",
+    "options": [
+      {"text":"No, they distract me","effects":{"confidence":-1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"Yes, often","effects":{"confidence":2}},
+      {"text":"With team effort","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 94,
+    "eq": {"stress":"high","confidence":"medium","empathy":"medium","risk":"medium","curiosity":"low"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "How do you stay steady during emotional uncertainty?",
+    "options": [
+      {"text":"I feel lost","effects":{"stress":-1}},
+      {"text":"I ground myself","effects":{"confidence":2}},
+      {"text":"I act fast","effects":{"risk":1}},
+      {"text":"I seek reassurance","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 95,
+    "eq": {"stress":"medium","confidence":"low","empathy":"high","risk":"low","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "Do you consider others feelings before acting?",
+    "options": [
+      {"text":"Rarely","effects":{"confidence":-1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"Only when needed","effects":{"risk":1}},
+      {"text":"Yes, always","effects":{"empathy":3}}
+    ]
+  },
+
+  {
+    "id": 96,
+    "eq": {"stress":"low","confidence":"medium","empathy":"low","risk":"high","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "Do emotional risks excite you or worry you?",
+    "options": [
+      {"text":"They worry me","effects":{"stress":-1}},
+      {"text":"Both","effects":{"confidence":1}},
+      {"text":"They excite me","effects":{"risk":3}},
+      {"text":"With guidance","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 97,
+    "eq": {"stress":"high","confidence":"low","empathy":"medium","risk":"low","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "What do you do to regain confidence after stress?",
+    "options": [
+      {"text":"I withdraw","effects":{"confidence":-2}},
+      {"text":"I calm myself","effects":{"confidence":1}},
+      {"text":"I push forward","effects":{"risk":1}},
+      {"text":"I seek encouragement","effects":{"empathy":2}}
+    ]
+  },
+  {
+    "id": 98,
+    "eq": {"stress":"medium","confidence":"medium","empathy":"high","risk":"low","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "easy",
+    "question": "Do emotional struggles increase your self-awareness?",
+    "options": [
+      {"text":"No, not really","effects":{"confidence":-1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"Yes, often","effects":{"curiosity":2}},
+      {"text":"Through others input","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 99,
+    "eq": {"stress":"low","confidence":"high","empathy":"low","risk":"high","curiosity":"high"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "Do intense emotions improve or block your thinking?",
+    "options": [
+      {"text":"They block it","effects":{"confidence":-1}},
+      {"text":"Sometimes","effects":{"confidence":1}},
+      {"text":"They improve it","effects":{"risk":2}},
+      {"text":"With support","effects":{"empathy":1}}
+    ]
+  },
+  {
+    "id": 100,
+    "eq": {"stress":"medium","confidence":"medium","empathy":"medium","risk":"medium","curiosity":"medium"},
+    "level": "emotional",
+    "difficulty": "medium",
+    "question": "How do emotions shape your actions over time?",
+    "options": [
+      {"text":"They confuse me","effects":{"confidence":-1}},
+      {"text":"They guide me","effects":{"confidence":2}},
+      {"text":"They push me","effects":{"risk":1}},
+      {"text":"They connect me to others","effects":{"empathy":1}}
+    ]
+  }
+]
+
+

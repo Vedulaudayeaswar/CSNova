@@ -1,0 +1,92 @@
+[
+  { "intent": "stress_response", "templates": [
+    "How do you react when {trigger}?",
+    "What do you do when you feel {emotion}?",
+    "How do you handle situations where {trigger}?"
+  ]},
+
+  { "intent": "confidence_under_pressure", "templates": [
+    "How confident do you feel when {trigger}?",
+    "What happens to your confidence when {situation}?"
+  ]},
+
+  { "intent": "emotional_regulation", "templates": [
+    "How do you calm yourself when {emotion}?",
+    "What helps you regain control when emotions rise?"
+  ]},
+
+  { "intent": "empathy_response", "templates": [
+    "What do you do when someone else feels {emotion}?",
+    "How do you react when others depend on you emotionally?"
+  ]},
+
+  { "intent": "risk_emotion_link", "templates": [
+    "Do emotions push you to take risks when {situation}?",
+    "How do strong emotions affect your decisions?"
+  ]},
+
+  { "intent": "failure_response", "templates": [
+    "How do you react after a failure?",
+    "What do you do when things do not go as planned?"
+  ]},
+
+  { "intent": "uncertainty_handling", "templates": [
+    "How do you feel when outcomes are uncertain?",
+    "What do you do when you do not know what will happen?"
+  ]},
+
+  { "intent": "decision_emotion_conflict", "templates": [
+    "What do you do when logic and emotions conflict?",
+    "How do emotions affect your decision-making?"
+  ]},
+
+  { "intent": "support_seeking", "templates": [
+    "How comfortable are you asking others for help?",
+    "Do you seek support when emotions become intense?"
+  ]},
+
+  { "intent": "emotional_reflection", "templates": [
+    "Do you reflect on your emotions after experiences?",
+    "How often do you think about why you felt a certain way?"
+  ]},
+
+  { "intent": "pressure_endurance", "templates": [
+    "How long can you handle pressure before reacting?",
+    "What happens when stress continues for a long time?"
+  ]},
+
+  { "intent": "emotional_motivation", "templates": [
+    "Do emotions motivate you or distract you?",
+    "How do feelings affect your motivation?"
+  ]},
+
+  { "intent": "responsibility_emotion", "templates": [
+    "How do you feel when others rely on you?",
+    "What happens when responsibility increases suddenly?"
+  ]},
+
+  { "intent": "emotional_balance", "templates": [
+    "How do you maintain emotional balance?",
+    "What helps you stay steady emotionally?"
+  ]},
+
+  { "intent": "conflict_handling", "templates": [
+    "How do you handle emotional conflicts?",
+    "What is your response during disagreements?"
+  ]},
+
+  { "intent": "self_control", "templates": [
+    "How well do you control your reactions?",
+    "Do you pause before reacting emotionally?"
+  ]},
+
+  { "intent": "emotional_growth", "templates": [
+    "Do emotional challenges help you grow?",
+    "How do difficult emotions change you over time?"
+  ]},
+
+  { "intent": "emotion_speed", "templates": [
+    "How quickly do you react emotionally?",
+    "Do you act fast when emotions rise?"
+  ]}
+]

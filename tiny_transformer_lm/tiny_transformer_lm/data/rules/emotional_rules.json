@@ -1,0 +1,42 @@
+{
+  "stress": [
+    "stress",
+    "pressure",
+    "overwhelmed",
+    "panic",
+    "anxious",
+    "fail",
+    "failure"
+  ],
+  "confidence": [
+    "confident",
+    "confidence",
+    "decide",
+    "focus",
+    "calm",
+    "steady",
+    "control"
+  ],
+  "empathy": [
+    "help",
+    "support",
+    "others",
+    "team",
+    "listen",
+    "care"
+  ],
+  "risk": [
+    "risk",
+    "fast",
+    "quick",
+    "bold",
+    "immediately"
+  ],
+  "curiosity": [
+    "why",
+    "learn",
+    "explore",
+    "understand",
+    "analyze"
+  ]
+}

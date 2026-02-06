@@ -1,0 +1,58 @@
+[
+  {
+    "intent": "deep_cause_effect",
+    "templates": [
+      "Why can {event} when {situation} result in {result}?",
+      "What causes {event} under {situation} to lead to {result}?"
+    ]
+  },
+  {
+    "intent": "decision_under_constraints",
+    "templates": [
+      "How would you decide when {problem} and {situation}?",
+      "Which decision makes sense if {problem} while {situation}?"
+    ]
+  },
+  {
+    "intent": "risk_and_tradeoff",
+    "templates": [
+      "What risks arise if {event} when {situation}?",
+      "What trade-off exists when {problem} under {situation}?"
+    ]
+  },
+  {
+    "intent": "failure_analysis",
+    "templates": [
+      "Why does failure occur if {event} during {situation}?",
+      "What failure mode appears when {event} and {situation}?"
+    ]
+  },
+  {
+    "intent": "strategy_reasoning",
+    "templates": [
+      "What strategy works best for {problem} when {situation}?",
+      "How should one approach {problem} under {situation}?"
+    ]
+  },
+  {
+    "intent": "complexity_reasoning",
+    "templates": [
+      "Why does {problem} become complex when {situation}?",
+      "What increases complexity in {problem} during {situation}?"
+    ]
+  },
+  {
+    "intent": "prediction_reasoning",
+    "templates": [
+      "What is likely to happen if {event} while {situation}?",
+      "How might outcomes change if {event} under {situation}?"
+    ]
+  },
+  {
+    "intent": "expert_reasoning",
+    "templates": [
+      "How would an expert handle {problem} when {situation}?",
+      "Why might beginners struggle with {problem} under {situation}?"
+    ]
+  }
+]

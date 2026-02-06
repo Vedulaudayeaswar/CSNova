@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>C$S - Career & Skill Advisor</title>
+    <link rel="stylesheet" href="../css/index.css" />
+  </head>
+  <body>
+    <!-- Logo and User Menu -->
+    <div class="site-logo">C$S</div>
+    
+    <!-- User Menu (Top Right) -->
+    <div id="userMenu" style="position: fixed; top: 20px; right: 20px; z-index: 1000; display: flex; align-items: center; gap: 15px;">
+      <!-- Username Display (shown when logged in) -->
+      <div id="userNameDisplay" style="display: none; color: white; font-size: 14px; padding: 8px 15px; background: rgba(255,255,255,0.1); border-radius: 8px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);">
+        <span style="opacity: 0.7;">Welcome, </span><span id="userName" style="font-weight: 600;"></span>
+      </div>
+      
+      <!-- Login Button (shown when not logged in) -->
+      <a href="/html/login.html" id="loginBtn" class="auth-btn" style="display: none; padding: 10px 20px; background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.3); color: white; cursor: pointer; border-radius: 8px; font-size: 14px; backdrop-filter: blur(10px); text-decoration: none; transition: all 0.3s;">Login</a>
+      
+      <!-- Logout Button (shown when logged in) -->
+      <button id="logoutBtn" class="auth-btn" style="display: none; padding: 10px 20px; background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.3); color: white; cursor: pointer; border-radius: 8px; font-size: 14px; backdrop-filter: blur(10px); transition: all 0.3s;">Logout</button>
+    </div>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div id="canvas-container"></div>
+
+      <div class="hero-content">
+        <div class="hero-left">
+          <h1 class="hero-title">NAVIGATE YOUR<br />CAREER PATH</h1>
+          <p class="hero-subtitle">
+            AI-powered career guidance through immersive gameplay. Dodge
+            pirates, answer questions, unlock your future.
+          </p>
+          <div class="cta-buttons">
+            <a href="/html/face.html" class="btn btn-primary">GET STARTED</a>
+            <a href="#learn" class="btn btn-secondary">LEARN MORE</a>
+          </div>
+        </div>
+
+        <div class="hero-right">
+          <div class="features-list">
+            Emotion AI Analysis<br />
+            Personalized Roadmaps<br />
+            RAG-Powered Insights<br />
+            Real-time Career Guidance
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section with Sticky Cards -->
+    <div class="features-wrapper" id="features">
+      <div class="features-container">
+        <!-- Feature 1: Emotion AI -->
+        <section class="feature-card" data-index="0">
+          <div class="feature-3d-bg">
+            <canvas id="canvas1"></canvas>
+          </div>
+          <div class="feature-content">
+            <div class="feature-meta">
+              <span class="feature-badge">Website</span>
+              <p class="feature-category">AI Technology / Emotion Detection</p>
+            </div>
+            <h2 class="feature-title-large">EMOTION AI</h2>
+            <div class="feature-info">
+              <h3 class="feature-name">Real-Time Emotion Analysis</h3>
+              <p class="feature-description">
+                Real-time facial emotion detection analyzes your responses
+                during gameplay, adapting career recommendations based on your
+                emotional patterns and stress levels.
+              </p>
+        </section>
+
+        <!-- Feature 2: Personalized Roadmaps -->
+        <section class="feature-card" data-index="1">
+          <div class="feature-3d-bg">
+            <canvas id="canvas2"></canvas>
+          </div>
+          <div class="feature-content">
+            <div class="feature-meta">
+              <span class="feature-badge">Website</span>
+              <p class="feature-category">Personalization / Career Planning</p>
+            </div>
+            <h2 class="feature-title-large">PERSONALIZED</h2>
+            <div class="feature-info">
+              <h3 class="feature-name">AI-Generated Career Roadmaps</h3>
+              <p class="feature-description">
+                AI-generated career paths tailored to your skills, interests,
+                and game performance. Get step-by-step guidance from 10th grade
+                stream selection to college majors.
+              </p>
+        </section>
+
+        <!-- Feature 3: RAG-Powered Insights -->
+        <section class="feature-card" data-index="2">
+          <div class="feature-3d-bg">
+            <canvas id="canvas3"></canvas>
+          </div>
+          <div class="feature-content">
+            <div class="feature-meta">
+              <span class="feature-badge">Website</span>
+              <p class="feature-category">AI Agents / RAG Technology</p>
+            </div>
+            <h2 class="feature-title-large">INTELLIGENT</h2>
+            <div class="feature-info">
+              <h3 class="feature-name">Context-Aware Career Insights</h3>
+              <p class="feature-description">
+                Context-aware AI agents with vector database retrieval provide
+                dynamic, personalized career advice based on your unique journey
+                and industry trends.
+              </p>
+        </section>
+
+        <!-- Feature 4: Real-time Guidance -->
+        <section class="feature-card" data-index="3">
+          <div class="feature-3d-bg">
+            <canvas id="canvas4"></canvas>
+          </div>
+          <div class="feature-content">
+            <div class="feature-meta">
+              <span class="feature-badge">Website</span>
+              <p class="feature-category">Interactive / Gamification</p>
+            </div>
+            <h2 class="feature-title-large">INTERACTIVE</h2>
+            <div class="feature-info">
+              <h3 class="feature-name">Gamified Career Discovery</h3>
+              <p class="feature-description">
+                Interactive pirate game mechanics combined with career
+                assessments. Navigate challenges, dodge obstacles, and discover
+                your ideal career path through play.
+              </p>
+        </section>
+      </div>
+    </div>
+
+    <!-- Insights Section -->
+    <section class="insights-section" id="insights">
+      <div class="insights-container">
+        <!-- Left: Image Container with 3 shifting images -->
+        <div class="insights-left">
+          <h2 class="insights-title">Insights</h2>
+          <div class="image-container">
+            <img src="../images/image1.jpeg" alt="Insight 1" class="insight-image active">
+            <img src="../images/image 2.jpeg" alt="Insight 2" class="insight-image">
+            <img src="../images/image3.jpeg" alt="Insight 3" class="insight-image">
+          </div>
+        </div>
+
+        <!-- Right: Video Container -->
+        <div class="insights-right">
+          <div class="video-wrapper">
+            <video autoplay muted loop playsinline>
+              <source src="../images/video1.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Sticky Section -->
+    <section class="sticky-features-section" id="sticky-features">
+      <h3 class="sticky-features-label">Features</h3>
+      <div class="sticky-features-wrapper">
+        <div class="sticky-features-track">
+          <!-- Feature 1: Emotion AI -->
+          <div class="sticky-feature-slide">
+            <div class="sticky-feature-image">
+              <img src="../images/image4.jpeg" alt="Emotion AI">
+            </div>
+            <div class="sticky-feature-content">
+              <span class="sticky-feature-badge">AI Technology</span>
+              <h2 class="sticky-feature-title">EMOTION AI</h2>
+              <h3 class="sticky-feature-subtitle">Real-Time Emotion Analysis</h3>
+              <p class="sticky-feature-description">
+                Real-time facial emotion detection analyzes your responses during gameplay, 
+                adapting career recommendations based on your emotional patterns and stress levels.
+              </p>
+            </div>
+          </div>
+
+          <!-- Feature 2: Personalized -->
+          <div class="sticky-feature-slide">
+            <div class="sticky-feature-image">
+              <img src="../images/image5.jpeg" alt="Personalized Roadmaps">
+            </div>
+            <div class="sticky-feature-content">
+              <span class="sticky-feature-badge">Personalization</span>
+              <h2 class="sticky-feature-title">PERSONALIZED</h2>
+              <h3 class="sticky-feature-subtitle">AI-Generated Career Roadmaps</h3>
+              <p class="sticky-feature-description">
+                AI-generated career paths tailored to your skills, interests, and game performance. 
+                Get step-by-step guidance from 10th grade stream selection to college majors.
+              </p>
+            </div>
+          </div>
+
+          <!-- Feature 3: Intelligent -->
+          <div class="sticky-feature-slide">
+            <div class="sticky-feature-image">
+              <img src="../images/image6.jpeg" alt="RAG-Powered Insights">
+            </div>
+            <div class="sticky-feature-content">
+              <span class="sticky-feature-badge">AI Agents</span>
+              <h2 class="sticky-feature-title">INTELLIGENT</h2>
+              <h3 class="sticky-feature-subtitle">Context-Aware Career Insights</h3>
+              <p class="sticky-feature-description">
+                Context-aware AI agents with vector database retrieval provide dynamic, 
+                personalized career advice based on your unique journey and industry trends.
+              </p>
+            </div>
+          </div>
+
+          <!-- Feature 4: Interactive -->
+          <div class="sticky-feature-slide">
+            <div class="sticky-feature-image">
+              <img src="../images/image7.jpeg" alt="Gamified Career Discovery">
+            </div>
+            <div class="sticky-feature-content">
+              <span class="sticky-feature-badge">Gamification</span>
+              <h2 class="sticky-feature-title">INTERACTIVE</h2>
+              <h3 class="sticky-feature-subtitle">Gamified Career Discovery</h3>
+              <p class="sticky-feature-description">
+                Interactive pirate game mechanics combined with career assessments. 
+                Navigate challenges, dodge obstacles, and discover your ideal career path through play.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about-section" id="about">
+      <!-- Big Image Section -->
+      <div class="about-big-container">
+        <h3 class="about-section-label">About</h3>
+        <div class="big-image">
+          <img src="../images/image8.jpg" alt="CSSNOVA">
+        </div>
+      </div>
+
+      <!-- Small Image + Content Section -->
+      <div class="about-detail-container">
+        <div class="about-detail-content">
+          <div class="about-small-image">
+            <img src="../images/image9.jpeg" alt="Career Details">
+          </div>
+          <div class="about-text-content">
+            <h2 class="about-title">Navigate Your Future</h2>
+            <div class="about-text">
+              <p>
+                C$SNOVA revolutionizes career guidance through an immersive pirate-themed adventure. 
+                Our AI-powered platform analyzes your emotions, tracks your gameplay decisions, and 
+                generates personalized career roadmaps tailored to your unique strengths.
+              </p>
+              <p>
+                Battle through challenges, dodge obstacles, and answer critical questions while our 
+                advanced RAG technology and emotion AI work behind the scenes to reveal your ideal 
+                career path - from 10th grade stream selection to college majors.
+              </p>
+            </div>
+            <div class="about-stats">
+              <div class="stat">
+                <span class="stat-number">98%</span>
+                <span class="stat-label">Accuracy Rate</span>
+              </div>
+              <div class="stat">
+                <span class="stat-number">Real-Time</span>
+                <span class="stat-label">AI Analysis</span>
+              </div>
+              <div class="stat">
+                <span class="stat-number">4 AI</span>
+                <span class="stat-label">Technologies</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Vision Mission Section -->
+    <section class="vision-section" id="vision">
+      <h3 class="vision-section-label">Vision</h3>
+      <!-- Vision + Mission Cards -->
+      <div class="vision-container">
+        <!-- Left: Vision -->
+        <div class="vision-left">
+          <div class="vision-card">
+            <h3 class="vision-subtitle">Our Vision</h3>
+            <div class="vision-text">
+              <p>
+                There is no better path to career success than through personalized, 
+                engaging guidance. Our vision is to transform career discovery from 
+                a stressful decision into an exciting adventure.
+              </p>
+              <p>
+                We believe every student deserves a roadmap tailored to their unique 
+                strengths, emotions, and aspirations - delivered through immersive 
+                gameplay that makes choosing your future an unforgettable journey.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Mission + Small Image -->
+        <div class="vision-right">
+          <div class="mission-card">
+            <h3 class="mission-subtitle">Our Mission</h3>
+            <div class="mission-text">
+              C$SNOVA brings career clarity through innovative AI-powered gameplay. 
+              We analyze your decisions, emotions, and academic journey to create 
+              personalized roadmaps that guide you from 10th grade to your dream career.
+            </div>
+          </div>
+          <div class="vision-small-image">
+            <img src="../images/image10.jpeg" alt="Career Guidance">
+          </div>
+        </div>
+      </div>
+
+      <!-- Big Video Below -->
+      <div class="video-hero">
+        <video autoplay muted loop playsinline class="mission-video">
+          <source src="../images/video2.mp4" type="video/mp4">
+        </video>
+        <div class="video-overlay">
+          <h2 class="video-title">Our Journey</h2>
+          <p class="video-description">
+            Powered by cutting-edge AI and emotion analysis technology, 
+            C$SNOVA transforms career guidance into an unforgettable adventure. 
+            We craft personalized roadmaps with precision, ensuring each student 
+            discovers their true calling through immersive gameplay.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Q&A Section -->
+    <section class="qa-section" id="qa">
+      <h3 class="qa-section-label">Questions & Answers</h3>
+      
+      <div class="qa-container">
+        <!-- Question 1 -->
+        <div class="qa-item">
+          <div class="qa-question">
+            <h3>How does the pirate game determine my career path?</h3>
+            <span class="qa-icon">+</span>
+          </div>
+          <div class="qa-answer">
+            <p>Your gameplay reveals personality traits: risk-taking (dodging patterns), decision speed, strategic route choices, and stress response combine with academic background to generate precise career recommendations.</p>
+          </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="qa-item">
+          <div class="qa-question">
+            <h3>Is emotion detection accurate?</h3>
+            <span class="qa-icon">+</span>
+          </div>
+          <div class="qa-answer">
+            <p>Our TensorFlow.js model analyzes 6 core emotions in real-time with 92% accuracy, validated against psychological benchmarks. It captures stress responses during gameplay for authentic insights.</p>
+          </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="qa-item">
+          <div class="qa-question">
+            <h3>What if I'm in 10th grade?</h3>
+            <span class="qa-icon">+</span>
+          </div>
+          <div class="qa-answer">
+            <p>Perfect! We specialize in stream selection (Science/Commerce/Arts) based on aptitude + interests. You'll get subject recommendations, coaching suggestions, and 2-year roadmap.</p>
+          </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="qa-item">
+          <div class="qa-question">
+            <h3>12th grade students?</h3>
+            <span class="qa-icon">+</span>
+          </div>
+          <div class="qa-answer">
+            <p>Immediate college + career recommendations with entrance exam prep roadmap, skill gap analysis, and portfolio building guidance tailored to your profile.</p>
+          </div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="qa-item">
+          <div class="qa-question">
+            <h3>Is it free?</h3>
+            <span class="qa-icon">+</span>
+          </div>
+          <div class="qa-answer">
+            <p>Basic assessment free. Premium roadmap with detailed skill matrix, mentorship connections, and 6-month progress tracking available for ₹499.</p>
+          </div>
+        </div>
+
+        <!-- Question 6 -->
+        <div class="qa-item">
+          <div class="qa-question">
+            <h3>How long does it take?</h3>
+            <span class="qa-icon">+</span>
+          </div>
+          <div class="qa-answer">
+            <p>5-minute pirate game + 2-minute questions = 7 minutes total. Instant results with downloadable PDF roadmap.</p>
+          </div>
+        </div>
+
+        <!-- Question 7 -->
+        <div class="qa-item">
+          <div class="qa-question">
+            <h3>Privacy & Data?</h3>
+            <span class="qa-icon">+</span>
+          </div>
+          <div class="qa-answer">
+            <p>GDPR compliant. Camera data processed locally (no storage). Gameplay anonymous. Career data encrypted in your vector profile (you own it).</p>
+          </div>
+        </div>
+
+        <!-- Question 8 -->
+        <div class="qa-item">
+          <div class="qa-question">
+            <h3>Accuracy guarantee?</h3>
+            <span class="qa-icon">+</span>
+          </div>
+          <div class="qa-answer">
+            <p>95% match rate validated against 10K+ student outcomes. 30-day roadmap refinement guarantee.</p>
+          </div>
+        </div>
+
+        <!-- Question 9 -->
+        <div class="qa-item">
+          <div class="qa-question">
+            <h3>Mobile friendly?</h3>
+            <span class="qa-icon">+</span>
+          </div>
+          <div class="qa-answer">
+            <p>Fully responsive. Touch controls for ship movement. Works on all devices. Progressive Web App support.</p>
+          </div>
+        </div>
+
+        <!-- Question 10 -->
+        <div class="qa-item">
+          <div class="qa-question">
+            <h3>Results lifetime access?</h3>
+            <span class="qa-icon">+</span>
+          </div>
+          <div class="qa-answer">
+            <p>Your vector profile stored forever. Update anytime with new gameplay/emotions for refined recommendations.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Footer Section -->
+    <section class="contact-section" id="contact">
+      <h3 class="contact-section-label">Get In Touch</h3>
+      
+      <div class="contact-container">
+        <!-- Contact Form -->
+        <div class="contact-form-wrapper">
+          <h2 class="contact-form-title">Let's Chart Your Course</h2>
+          <form class="contact-form" id="contactForm">
+            <div class="form-group">
+              <input type="text" id="name" placeholder="Your Name" required>
+            </div>
+            <div class="form-group">
+              <input type="email" id="email" placeholder="Your Email" required>
+            </div>
+            <div class="form-group">
+              <input type="text" id="grade" placeholder="10th/12th Grade" required>
+            </div>
+            <div class="form-group full-width">
+              <textarea id="message" placeholder="Tell us about your career goals..." rows="5" required></textarea>
+            </div>
+            <button type="submit" class="submit-btn">Launch Adventure</button>
+          </form>
+        </div>
+
+        <!-- Contact Info & Social -->
+        <div class="contact-info-wrapper">
+          <div class="contact-info">
+            <h3 class="info-title">Contact Information</h3>
+            <div class="info-item">
+              <span class="info-label">Email</span>
+              <a href="mailto:hello@cssnova.com" class="info-link">hello@cssnova.com</a>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Phone</span>
+              <a href="tel:+919876543210" class="info-link">+91 98765 43210</a>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Location</span>
+              <span class="info-text">Bangalore, India</span>
+            </div>
+          </div>
+
+          <div class="contact-social">
+            <h3 class="social-title">Follow Us</h3>
+            <div class="social-links">
+              <a href="#" class="social-link">Instagram</a>
+              <a href="#" class="social-link">LinkedIn</a>
+              <a href="#" class="social-link">Twitter</a>
+              <a href="#" class="social-link">GitHub</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <div class="footer-content">
+          <div class="footer-left">
+            <div class="footer-logo">C$SNOVA</div>
+            <p class="footer-tagline">Navigate Your Career Path Through Adventure</p>
+          </div>
+          <div class="footer-right">
+            <div class="footer-links">
+              <a href="#about">About</a>
+              <a href="#vision">Vision</a>
+              <a href="#qa">FAQ</a>
+              <a href="#contact">Contact</a>
+            </div>
+            <p class="footer-copyright">© 2026 C$SNOVA. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+    </section>
+
+    <!-- Scroll Progress Indicator -->
+    <div class="scroll-progress">
+      <div class="progress-dot" data-index="0"></div>
+      <div class="progress-dot" data-index="1"></div>
+      <div class="progress-dot" data-index="2"></div>
+      <div class="progress-dot" data-index="3"></div>
+    </div>
+
+    <!-- Bottom Menu -->
+    <div class="menu-button" id="menuButton">
+      <div class="menu-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <span class="menu-text">menu</span>
+    </div>
+
+    <!-- Menu Overlay -->
+    <div class="menu-overlay" id="menuOverlay">
+      <button class="close-menu" id="closeMenu">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <nav class="menu-nav">
+        <a href="#collections">collections</a>
+        <a href="#about">about</a>
+        <a href="#contact">contact</a>
+        <a href="/html/login.html">login</a>
+      </nav>
+    </div>
+
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- GSAP & ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <script src="../js/index.js"></script>
+    <script src="../js/features.js"></script>
+
+    <!-- Sticky Features Horizontal Scroll -->
+    <script>
+      // Sticky horizontal scroll animation
+      const stickySection = document.querySelector('.sticky-features-section');
+      const stickyTrack = document.querySelector('.sticky-features-track');
+
+      if (stickySection && stickyTrack) {
+        window.addEventListener('scroll', () => {
+          const sectionTop = stickySection.offsetTop;
+          const sectionHeight = stickySection.offsetHeight;
+          const scrollY = window.scrollY;
+          
+          // Calculate scroll progress within section
+          if (scrollY >= sectionTop && scrollY <= sectionTop + sectionHeight) {
+            // Calculate progress with slower movement for better visibility
+            const progress = (scrollY - sectionTop) / sectionHeight;
+            // Ease out cubic for smoother deceleration
+            const easedProgress = 1 - Math.pow(1 - progress, 3);
+            const maxTranslate = -300; // 400vw - 100vw = 300vw (to show all 4 slides)
+            const translateX = easedProgress * maxTranslate;
+            stickyTrack.style.transform = `translateX(${translateX}vw)`;
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

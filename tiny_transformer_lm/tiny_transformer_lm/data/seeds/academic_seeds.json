@@ -1,0 +1,156 @@
+[
+  {
+    "intent": "physics_concept_basic",
+    "templates": [
+      "Why does {phenomenon} occur when {condition}?",
+      "What is the reason behind {phenomenon}?"
+    ]
+  },
+  {
+    "intent": "physics_laws",
+    "templates": [
+      "Which law explains {phenomenon}?",
+      "How does a law of physics apply to {phenomenon}?"
+    ]
+  },
+  {
+    "intent": "physics_application_daily_life",
+    "templates": [
+      "How is {phenomenon} used in daily life?",
+      "Where do we observe {phenomenon} in real life?"
+    ]
+  },
+  {
+    "intent": "physics_numerical_thinking",
+    "templates": [
+      "What happens to {quantity} if {condition}?",
+      "How does {quantity} change when {condition}?"
+    ]
+  },
+  {
+    "intent": "chemistry_concepts",
+    "templates": [
+      "Why does {chemical_process} occur?",
+      "What causes {chemical_process}?"
+    ]
+  },
+  {
+    "intent": "chemistry_application",
+    "templates": [
+      "How is {chemical_process} useful in daily life?",
+      "Where is {chemical_process} commonly used?"
+    ]
+  },
+  {
+    "intent": "biology_concepts",
+    "templates": [
+      "Why is {biological_process} important for living organisms?",
+      "What is the role of {biological_process}?"
+    ]
+  },
+  {
+    "intent": "biology_human_body",
+    "templates": [
+      "How does {body_system} help the human body?",
+      "Why is {body_system} essential for survival?"
+    ]
+  },
+  {
+    "intent": "mathematics_concepts",
+    "templates": [
+      "What is the meaning of {math_concept}?",
+      "Why is {math_concept} important in mathematics?"
+    ]
+  },
+  {
+    "intent": "mathematics_problem_solving",
+    "templates": [
+      "How do you solve problems involving {math_concept}?",
+      "What happens when {math_concept} is applied incorrectly?"
+    ]
+  },
+  {
+    "intent": "mathematics_real_life",
+    "templates": [
+      "Where is {math_concept} used in real life?",
+      "How does {math_concept} help in daily calculations?"
+    ]
+  },
+  {
+    "intent": "computer_science_basics",
+    "templates": [
+      "Why is {cs_concept} important in computer science?",
+      "What problem does {cs_concept} solve?"
+    ]
+  },
+  {
+    "intent": "programming_logic",
+    "templates": [
+      "What happens when {cs_structure} is used incorrectly?",
+      "Why do we use {cs_structure} in programs?"
+    ]
+  },
+  {
+    "intent": "information_technology",
+    "templates": [
+      "How does {technology} help in everyday life?",
+      "Why is {technology} important in modern society?"
+    ]
+  },
+  {
+    "intent": "electronics_basics",
+    "templates": [
+      "What is the function of {component}?",
+      "Why is {component} used in circuits?"
+    ]
+  },
+  {
+    "intent": "electronics_application",
+    "templates": [
+      "What happens when {component} fails in a circuit?",
+      "How does {component} affect circuit performance?"
+    ]
+  },
+  {
+    "intent": "environmental_science",
+    "templates": [
+      "Why is {environmental_factor} a concern today?",
+      "How does {environmental_factor} affect the environment?"
+    ]
+  },
+  {
+    "intent": "scientific_reasoning",
+    "templates": [
+      "Why is observation important in science?",
+      "How does experimentation help in understanding science?"
+    ]
+  },
+  {
+    "intent": "exam_oriented_reasoning",
+    "templates": [
+      "Why is {concept} frequently asked in board exams?",
+      "What common mistake do students make in {concept}?"
+    ]
+  },
+  {
+    "intent": "career_awareness_science",
+    "templates": [
+      "How does studying {concept} help in science careers?",
+      "Which careers require knowledge of {concept}?"
+    ]
+  },
+  {
+    "intent": "career_stream_selection",
+    "templates": [
+      "Why is {subject} important for higher studies?",
+      "How does {subject} influence career choices?"
+    ]
+  },
+  {
+    "intent": "applied_thinking_school_level",
+    "templates": [
+      "How can {concept} be applied to solve real-life problems?",
+      "Why is understanding {concept} better than memorizing it?"
+    ]
+  }
+]

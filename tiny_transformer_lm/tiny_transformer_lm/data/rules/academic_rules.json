@@ -1,0 +1,73 @@
+{
+  "physics": [
+    "force",
+    "motion",
+    "energy",
+    "current",
+    "voltage",
+    "law",
+    "phenomenon"
+  ],
+  "chemistry": [
+    "reaction",
+    "chemical",
+    "acid",
+    "base",
+    "salt",
+    "oxidation",
+    "reduction"
+  ],
+  "biology": [
+    "cell",
+    "organism",
+    "respiration",
+    "digestion",
+    "circulation",
+    "photosynthesis"
+  ],
+  "mathematics": [
+    "equation",
+    "formula",
+    "function",
+    "graph",
+    "variable",
+    "probability"
+  ],
+  "computer_science": [
+    "program",
+    "algorithm",
+    "loop",
+    "condition",
+    "data",
+    "logic"
+  ],
+  "electronics": [
+    "circuit",
+    "resistor",
+    "capacitor",
+    "current",
+    "voltage",
+    "component"
+  ],
+  "environment": [
+    "pollution",
+    "climate",
+    "environment",
+    "global",
+    "resources"
+  ],
+  "exam_focus": [
+    "why",
+    "how",
+    "reason",
+    "explain"
+  ],
+  "career_awareness": [
+    "career",
+    "job",
+    "profession",
+    "future",
+    "engineering",
+    "medical"
+  ]
+}
