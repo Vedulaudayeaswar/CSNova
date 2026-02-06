@@ -14,7 +14,8 @@ import random
 from datetime import datetime, timedelta
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
-from career_rag import get_rag_instance
+# Lazy import RAG to avoid blocking server startup
+# from career_rag import get_rag_instance
 import numpy as np
 import cv2
 import base64
@@ -96,15 +97,23 @@ except Exception as e:
     emotion_labels = []
     face_cascade = None
 
-# Initialize RAG system
-logger.info("Initializing Career RAG system...")
-try:
-    rag_system = get_rag_instance()
-    logger.info("RAG system initialized successfully!")
-except Exception as e:
-    logger.error(f"RAG system initialization failed: {e}")
-    logger.info("Falling back to traditional recommendation system")
-    rag_system = None
+# Initialize RAG system lazily (after server starts)
+logger.info("RAG system will be loaded on first use")
+rag_system = None
+
+def get_rag_system():
+    """Lazy load RAG system on first use"""
+    global rag_system
+    if rag_system is None:
+        try:
+            from career_rag import get_rag_instance
+            logger.info("Loading RAG system...")
+            rag_system = get_rag_instance()
+            logger.info("RAG system loaded successfully!")
+        except Exception as e:
+            logger.error(f"RAG system loading failed: {e}")
+            logger.info("Using fallback recommendation system")
+    return rag_system
 
 def get_db_connection():
     """Thread-safe database connection"""
@@ -860,7 +869,10 @@ def recommend_career(session_id):
         career_matches = []
         top_career = None
         
-        if rag_system:
+        # Lazy load RAG system on first use
+        current_rag = get_rag_system()
+        
+        if current_rag:
             try:
                 # Convert scores to profile format for RAG
                 emotional_profile = {k: ('high' if v >= 3 else 'medium' if v >= 1 else 'low') 
@@ -877,7 +889,8 @@ def recommend_career(session_id):
                 }
                 
                 # Get RAG recommendations
-                rag_recommendations = rag_system.get_career_recommendations(user_profile, top_k=5)
+                rag_recommendations = current_rag.get_career_recommendations(user_profile, top_k=5)
+
                 
                 print(f"[RAG] Found {len(rag_recommendations)} recommendations")
                 
@@ -977,7 +990,7 @@ def recommend_career(session_id):
             'reasoningScores': reasoning_scores,
             'academicScores': academic_scores,
             'allMatches': career_matches[:5],  # Top 5 matches
-            'recommendation_method': 'RAG' if rag_system and len(career_matches) > 0 and 'match_score' in career_matches[0] else 'Traditional'
+            'recommendation_method': 'RAG' if get_rag_system() and len(career_matches) > 0 and 'match_score' in career_matches[0] else 'Traditional'
         })
     except Exception as e:
         print(f"Error in career recommendation: {e}")
@@ -1026,7 +1039,7 @@ def health_check():
         'status': 'healthy',
         'timestamp': datetime.now().isoformat(),
         'emotion_model_loaded': emotion_model is not None,
-        'rag_system_loaded': rag_system is not None
+        'rag_system_loaded': get_rag_system() is not None
     })
 
 @app.route('/')
