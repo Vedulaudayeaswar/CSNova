@@ -1148,6 +1148,28 @@ def explore_careers():
 @limiter.limit("30 per minute")
 def detect_emotion():
     """Detect emotion from webcam frame using trained CNN model"""
+    import signal
+    from contextlib import contextmanager
+    
+    @contextmanager
+    def timeout(seconds):
+        """Timeout context manager"""
+        def timeout_handler(signum, frame):
+            raise TimeoutError("Operation timed out")
+        
+        # Set the signal handler
+        if hasattr(signal, 'SIGALRM'):
+            old_handler = signal.signal(signal.SIGALRM, timeout_handler)
+            signal.alarm(seconds)
+            try:
+                yield
+            finally:
+                signal.alarm(0)
+                signal.signal(signal.SIGALRM, old_handler)
+        else:
+            # Windows doesn't support SIGALRM, just proceed without timeout
+            yield
+    
     try:
         if not emotion_model or not face_cascade:
             logger.error("Emotion detection requested but model not loaded")
@@ -1164,10 +1186,14 @@ def detect_emotion():
         
         # Decode base64 image with timeout protection
         try:
-            image_data = image_data.split(',')[1] if ',' in image_data else image_data
-            image_bytes = base64.b64decode(image_data)
-            nparr = np.frombuffer(image_bytes, np.uint8)
-            frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+            with timeout(10):  # 10 second timeout for decoding
+                image_data = image_data.split(',')[1] if ',' in image_data else image_data
+                image_bytes = base64.b64decode(image_data)
+                nparr = np.frombuffer(image_bytes, np.uint8)
+                frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        except TimeoutError:
+            logger.error("Image decoding timeout")
+            return jsonify({'error': 'Image processing timeout'}), 408
         except Exception as decode_error:
             logger.error(f"Image decoding error: {decode_error}")
             return jsonify({'error': 'Failed to decode image'}), 400
@@ -1175,25 +1201,31 @@ def detect_emotion():
         if frame is None:
             return jsonify({'error': 'Invalid image data'}), 400
         
-        # Optimize: Resize large images before processing to reduce memory
-        max_dimension = 800
+        # Aggressively resize images to reduce processing time
+        max_dimension = 640  # Reduced from 800
         height, width = frame.shape[:2]
         if max(height, width) > max_dimension:
             scale = max_dimension / max(height, width)
             new_width = int(width * scale)
             new_height = int(height * scale)
-            frame = cv2.resize(frame, (new_width, new_height))
+            frame = cv2.resize(frame, (new_width, new_height), interpolation=cv2.INTER_AREA)
         
-        # Convert to grayscale
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        
-        # Detect faces with optimized parameters
-        faces = face_cascade.detectMultiScale(
-            gray, 
-            scaleFactor=1.1,  # More sensitive (was 1.3)
-            minNeighbors=4,   # Reduced for faster detection
-            minSize=(30, 30)  # Skip tiny faces
-        )
+        try:
+            with timeout(15):  # 15 second timeout for face detection
+                # Convert to grayscale
+                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                
+                # Detect faces with optimized parameters
+                faces = face_cascade.detectMultiScale(
+                    gray, 
+                    scaleFactor=1.2,  # Balanced detection
+                    minNeighbors=3,   # Faster detection
+                    minSize=(40, 40), # Skip small faces
+                    maxSize=(300, 300)  # Skip very large faces
+                )
+        except TimeoutError:
+            logger.error("Face detection timeout")
+            return jsonify({'error': 'Face detection timeout'}), 408
         
         if len(faces) == 0:
             return jsonify({
@@ -1203,24 +1235,39 @@ def detect_emotion():
                 'probabilities': {}
             })
         
-        # Process first face
-        x, y, w, h = faces[0]
-        face = gray[y:y+h, x:x+w]
-        face = cv2.resize(face, (48, 48))
-        face = face.astype('float32') / 255.0  # Explicit type conversion
-        face = np.reshape(face, (1, 48, 48, 1))
+        try:
+            with timeout(20):  # 20 second timeout for prediction
+                # Process first face
+                x, y, w, h = faces[0]
+                face = gray[y:y+h, x:x+w]
+                face = cv2.resize(face, (48, 48), interpolation=cv2.INTER_AREA)
+                face = face.astype('float32') / 255.0
+                face = np.reshape(face, (1, 48, 48, 1))
+                
+                # Configure TensorFlow for faster inference
+                import os
+                os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+                
+                # Predict emotions with explicit configuration
+                probs = emotion_model.predict(
+                    face, 
+                    verbose=0, 
+                    batch_size=1,
+                    use_multiprocessing=False
+                )[0]
+                
+                # Create probability dictionary - only top 3 to reduce response size
+                sorted_indices = np.argsort(probs)[::-1]
+                probabilities = {emotion_labels[i]: float(probs[i]) for i in sorted_indices[:3]}
+                
+                # Get dominant emotion
+                dominant_idx = np.argmax(probs)
+                dominant_emotion = emotion_labels[dominant_idx]
+                confidence = float(probs[dominant_idx])
         
-        # Predict emotions with batch size 1
-        probs = emotion_model.predict(face, verbose=0, batch_size=1)[0]
-        
-        # Create probability dictionary - only top 3 to reduce response size
-        sorted_indices = np.argsort(probs)[::-1]
-        probabilities = {emotion_labels[i]: float(probs[i]) for i in sorted_indices[:3]}
-        
-        # Get dominant emotion
-        dominant_idx = np.argmax(probs)
-        dominant_emotion = emotion_labels[dominant_idx]
-        confidence = float(probs[dominant_idx])
+        except TimeoutError:
+            logger.error("Emotion prediction timeout")
+            return jsonify({'error': 'Emotion prediction timeout - server overloaded'}), 408
         
         return jsonify({
             'success': True,
