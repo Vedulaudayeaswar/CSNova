@@ -1162,20 +1162,38 @@ def detect_emotion():
         if not image_data:
             return jsonify({'error': 'No image provided'}), 400
         
-        # Decode base64 image
-        image_data = image_data.split(',')[1] if ',' in image_data else image_data
-        image_bytes = base64.b64decode(image_data)
-        nparr = np.frombuffer(image_bytes, np.uint8)
-        frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        # Decode base64 image with timeout protection
+        try:
+            image_data = image_data.split(',')[1] if ',' in image_data else image_data
+            image_bytes = base64.b64decode(image_data)
+            nparr = np.frombuffer(image_bytes, np.uint8)
+            frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        except Exception as decode_error:
+            logger.error(f"Image decoding error: {decode_error}")
+            return jsonify({'error': 'Failed to decode image'}), 400
         
         if frame is None:
             return jsonify({'error': 'Invalid image data'}), 400
         
+        # Optimize: Resize large images before processing to reduce memory
+        max_dimension = 800
+        height, width = frame.shape[:2]
+        if max(height, width) > max_dimension:
+            scale = max_dimension / max(height, width)
+            new_width = int(width * scale)
+            new_height = int(height * scale)
+            frame = cv2.resize(frame, (new_width, new_height))
+        
         # Convert to grayscale
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         
-        # Detect faces
-        faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
+        # Detect faces with optimized parameters
+        faces = face_cascade.detectMultiScale(
+            gray, 
+            scaleFactor=1.1,  # More sensitive (was 1.3)
+            minNeighbors=4,   # Reduced for faster detection
+            minSize=(30, 30)  # Skip tiny faces
+        )
         
         if len(faces) == 0:
             return jsonify({
@@ -1189,14 +1207,15 @@ def detect_emotion():
         x, y, w, h = faces[0]
         face = gray[y:y+h, x:x+w]
         face = cv2.resize(face, (48, 48))
-        face = face / 255.0
+        face = face.astype('float32') / 255.0  # Explicit type conversion
         face = np.reshape(face, (1, 48, 48, 1))
         
-        # Predict emotions
-        probs = emotion_model.predict(face, verbose=0)[0]
+        # Predict emotions with batch size 1
+        probs = emotion_model.predict(face, verbose=0, batch_size=1)[0]
         
-        # Create probability dictionary
-        probabilities = {emotion_labels[i]: float(probs[i]) for i in range(len(emotion_labels))}
+        # Create probability dictionary - only top 3 to reduce response size
+        sorted_indices = np.argsort(probs)[::-1]
+        probabilities = {emotion_labels[i]: float(probs[i]) for i in sorted_indices[:3]}
         
         # Get dominant emotion
         dominant_idx = np.argmax(probs)
@@ -1213,8 +1232,10 @@ def detect_emotion():
         })
         
     except Exception as e:
-        print(f"Error in emotion detection: {e}")
-        return jsonify({'error': str(e)}), 500
+        logger.error(f"Error in emotion detection: {e}")
+        import traceback
+        logger.error(traceback.format_exc())
+        return jsonify({'error': 'Internal server error processing emotion detection'}), 500
 
 
 if __name__ == '__main__':
