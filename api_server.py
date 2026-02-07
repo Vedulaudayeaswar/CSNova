@@ -1240,12 +1240,29 @@ def detect_emotion():
         face = face.astype('float32') / 255.0
         face = np.reshape(face, (1, 48, 48, 1))
         
-        # Predict emotions with explicit configuration
-        probs = emotion_model.predict(
-            face, 
-            verbose=0, 
-            batch_size=1
-        )[0]
+        # Predict emotions with timing
+        import time
+        start_time = time.time()
+        logger.info("Starting emotion prediction...")
+        
+        try:
+            probs = emotion_model.predict(
+                face, 
+                verbose=0, 
+                batch_size=1
+            )[0]
+            
+            prediction_time = time.time() - start_time
+            logger.info(f"Prediction completed in {prediction_time:.2f} seconds")
+        except Exception as pred_error:
+            logger.error(f"Prediction error: {pred_error}")
+            return jsonify({
+                'success': True,
+                'face_detected': False,
+                'emotion': None,
+                'probabilities': {},
+                'error': 'Emotion prediction failed'
+            })
         
         # Create probability dictionary - only top 3 to reduce response size
         sorted_indices = np.argsort(probs)[::-1]
