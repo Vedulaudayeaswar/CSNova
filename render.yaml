@@ -1,15 +1,11 @@
 # Render Deployment Configuration
 # This file is automatically used by Render
 
-build:
-  env: python
-  buildCommand: pip install -r requirements.txt
-
 services:
   - type: web
     name: career-guidance-ai
     env: python
-    buildCommand: pip install -r requirements.txt
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
     startCommand: gunicorn api_server:app --workers 2 --threads 2 --timeout 300 --preload --worker-class sync --max-requests 1000 --max-requests-jitter 50
     envVars:
       - key: PYTHON_VERSION
