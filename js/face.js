@@ -144,6 +144,9 @@ class EmotionDetector {
   }
 
   async startAnalysis() {
+    console.log("🚀 Start Analysis button clicked!");
+    console.log("Camera ready:", this.cameraReady);
+    
     if (!this.cameraReady) {
       alert("Camera is not ready yet. Please wait...");
       return;
@@ -165,13 +168,19 @@ class EmotionDetector {
     document.getElementById("saveBtn").style.display = "none";
     document.getElementById("resultsSection").style.display = "none";
 
+    console.log("✅ Starting emotion detection loop...");
     this.detectEmotions();
   }
 
   async detectEmotions() {
-    if (!this.isAnalyzing) return;
+    if (!this.isAnalyzing) {
+      console.log("Detection stopped - isAnalyzing is false");
+      return;
+    }
 
     try {
+      console.log("📸 Capturing frame...");
+      
       // Capture current frame from video
       this.ctx.drawImage(
         this.video,
@@ -181,6 +190,8 @@ class EmotionDetector {
         this.canvas.height,
       );
       const imageData = this.canvas.toDataURL("image/jpeg", 0.8);
+      
+      console.log("📤 Sending frame to server:", `${this.API_URL}/emotion/detect`);
 
       // Send frame to backend for emotion detection
       const response = await fetch(`${this.API_URL}/emotion/detect`, {
@@ -190,18 +201,12 @@ class EmotionDetector {
         },
         body: JSON.stringify({ image: imageData }),
       });
-
-      if (!response.ok) {
-        throw new Error(
-          `Server error: ${response.status} ${response.statusText}`,
-        );
-      }
-
-      const result = await response.json();
+      
+      console.log("📊 Result:", result);
 
       // Check for API errors
       if (result.error) {
-        console.error("API Error:", result.error, result.details || "");
+        console.error("❌ API Error:", result.error, result.details || "");
         // Show error to user if it's a persistent issue (503)
         if (response.status === 503) {
           this.showErrorMessage(
@@ -218,8 +223,12 @@ class EmotionDetector {
       document.getElementById("sessionTime").textContent =
         this.formatTime(currentTime);
       document.getElementById("frameCount").textContent = this.frameCount;
+      
+      console.log(`✅ Frame ${this.frameCount} processed`);
 
       if (result.success && result.face_detected) {
+        console.log(`😊 Face detected! Emotion: ${result.emotion} (${(result.confidence * 100).toFixed(1)}%)`);
+        
         // Process emotions from the trained model
         const emotionData = this.processEmotions(result);
         this.emotionHistory.push({
@@ -229,6 +238,17 @@ class EmotionDetector {
 
         // Update UI
         this.updateEmotionDisplay(emotionData);
+
+        // Aggregate stats
+        this.aggregateStats(emotionData);
+      } else {
+        console.log("❌ No face detected in frame");
+        // No face detected
+        this.updateEmotionDisplay(null);
+      }
+    } catch (error) {
+      console.error("🔥 Detection error:", error);
+      console.error("Error details:", error.message, error.stack);
 
         // Aggregate stats
         this.aggregateStats(emotionData);
