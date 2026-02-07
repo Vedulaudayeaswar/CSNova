@@ -1149,6 +1149,8 @@ def explore_careers():
 def detect_emotion():
     """Detect emotion from webcam frame using trained CNN model"""
     try:
+        logger.info("Emotion detection request received")
+        
         if not emotion_model or not face_cascade:
             logger.error("Emotion detection requested but model not loaded")
             return jsonify({
@@ -1160,6 +1162,7 @@ def detect_emotion():
         image_data = data.get('image')
         
         if not image_data:
+            logger.warning("No image data in request")
             return jsonify({'error': 'No image provided'}), 400
         
         # Decode base64 image
@@ -1173,7 +1176,10 @@ def detect_emotion():
             return jsonify({'error': 'Failed to decode image'}), 400
         
         if frame is None:
+            logger.error("Frame is None after decoding")
             return jsonify({'error': 'Invalid image data'}), 400
+        
+        logger.debug(f"Frame shape: {frame.shape}")
         
         # Aggressively resize images to reduce processing time
         max_dimension = 640  # Balanced size
@@ -1183,6 +1189,7 @@ def detect_emotion():
             new_width = int(width * scale)
             new_height = int(height * scale)
             frame = cv2.resize(frame, (new_width, new_height), interpolation=cv2.INTER_LINEAR)
+            logger.debug(f"Resized frame to: {new_width}x{new_height}")
         
         # Convert to grayscale
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -1199,6 +1206,8 @@ def detect_emotion():
             flags=cv2.CASCADE_SCALE_IMAGE
         )
         
+        logger.info(f"Detected {len(faces)} face(s)")
+        
         if len(faces) == 0:
             return jsonify({
                 'success': True,
@@ -1209,6 +1218,8 @@ def detect_emotion():
         
         # Process first face
         x, y, w, h = faces[0]
+        logger.debug(f"Processing face at ({x}, {y}) with size {w}x{h}")
+        
         face = gray[y:y+h, x:x+w]
         face = cv2.resize(face, (48, 48), interpolation=cv2.INTER_AREA)
         face = face.astype('float32') / 255.0
@@ -1229,6 +1240,8 @@ def detect_emotion():
         dominant_idx = np.argmax(probs)
         dominant_emotion = emotion_labels[dominant_idx]
         confidence = float(probs[dominant_idx])
+        
+        logger.info(f"Detected emotion: {dominant_emotion} ({confidence:.2%} confidence)")
         
         return jsonify({
             'success': True,
