@@ -34,10 +34,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-try:
-    from tensorflow.keras.models import load_model
-except ImportError:
-    from keras.models import load_model
+# Note: TensorFlow/Keras not needed - using client-side emotion detection with TensorFlow.js
 
 app = Flask(__name__, static_folder='.', static_url_path='')
 app.secret_key = os.environ.get('SECRET_KEY', os.urandom(24).hex())
@@ -78,63 +75,9 @@ if not EMAIL_ADDRESS and os.environ.get('FLASK_ENV') == 'production':
 # Database configuration - SQLite (no installation needed!)
 DB_FILE = os.environ.get('DATABASE_URL', 'career_guidance.db')
 
-# Load emotion detection model
-logger.info("Loading emotion detection model...")
-try:
-    # Check multiple possible locations for the model file
-    model_paths = [
-        'emotion_cnn_fer2013.h5',  # Root directory
-        'senti_analy/emotion_cnn_fer2013.h5',  # Senti_analy folder
-    ]
-    
-    model_path = None
-    for path in model_paths:
-        if os.path.exists(path):
-            model_path = path
-            logger.info(f"Found emotion model at: {path}")
-            break
-    
-    if model_path:
-        # Load model without compilation for faster loading
-        emotion_model = load_model(model_path, compile=False)
-        
-        # Compile with optimized settings for CPU inference
-        emotion_model.compile(
-            optimizer='adam',
-            loss='categorical_crossentropy',
-            metrics=['accuracy']
-        )
-        
-        # Warm up the model with a dummy prediction
-        logger.info("Warming up emotion model...")
-        dummy_face = np.zeros((1, 48, 48, 1), dtype='float32')
-        _ = emotion_model.predict(dummy_face, verbose=0, batch_size=1)
-        logger.info("Model warmed up!")
-        
-        emotion_labels = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
-        face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-        
-        # Verify cascade loaded
-        if face_cascade.empty():
-            logger.error("Face cascade failed to load")
-            raise Exception("Haar cascade not found")
-            
-        logger.info("✅ Emotion detection model loaded successfully!")
-    else:
-        logger.warning("❌ Emotion model file not found in any location - emotion detection disabled")
-        logger.warning(f"Searched paths: {model_paths}")
-        logger.warning(f"Current directory: {os.getcwd()}")
-        logger.warning(f"Files in current dir: {os.listdir('.')}")
-        emotion_model = None
-        emotion_labels = []
-        face_cascade = None
-except Exception as e:
-    logger.error(f"❌ Could not load emotion model: {e}")
-    import traceback
-    logger.error(traceback.format_exc())
-    emotion_model = None
-    emotion_labels = []
-    face_cascade = None
+# Note: Emotion detection now runs client-side using TensorFlow.js (face-api.js)
+# Server-side emotion model loading removed to reduce memory usage and startup time
+logger.info("✅ Using client-side emotion detection (TensorFlow.js)")
 
 # Initialize RAG system lazily (after server starts)
 logger.info("RAG system will be loaded on first use")

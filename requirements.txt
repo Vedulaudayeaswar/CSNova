@@ -11,10 +11,10 @@ google-auth-oauthlib==1.2.0
 google-auth-httplib2==0.2.0
 
 # Data Processing (lightweight - no heavy ML dependencies!)
-# Career recommendations now use fast rule-based matching
+# Career recommendations use fast rule-based matching
 # Emotion detection moved to browser (TensorFlow.js)
-numpy==1.24.3
-opencv-python-headless==4.8.1.78
+# numpy==1.24.3  # Not needed anymore
+# opencv-python-headless==4.8.1.78  # Not needed - using browser for detection
 
 # Database - SQLite is built into Python
 # No additional database packages needed!
