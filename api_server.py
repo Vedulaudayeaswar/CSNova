@@ -1176,24 +1176,27 @@ def detect_emotion():
             return jsonify({'error': 'Invalid image data'}), 400
         
         # Aggressively resize images to reduce processing time
-        max_dimension = 480  # Smaller for faster processing
+        max_dimension = 640  # Balanced size
         height, width = frame.shape[:2]
         if max(height, width) > max_dimension:
             scale = max_dimension / max(height, width)
             new_width = int(width * scale)
             new_height = int(height * scale)
-            frame = cv2.resize(frame, (new_width, new_height), interpolation=cv2.INTER_AREA)
+            frame = cv2.resize(frame, (new_width, new_height), interpolation=cv2.INTER_LINEAR)
         
         # Convert to grayscale
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         
-        # Detect faces with optimized parameters
+        # Apply histogram equalization for better face detection
+        gray = cv2.equalizeHist(gray)
+        
+        # Detect faces with relaxed parameters for better detection
         faces = face_cascade.detectMultiScale(
             gray, 
-            scaleFactor=1.3,  # Balanced detection
-            minNeighbors=3,   # Faster detection
-            minSize=(30, 30), # Skip small faces
-            maxSize=(200, 200)  # Skip very large faces
+            scaleFactor=1.1,  # More sensitive
+            minNeighbors=3,   # Lower threshold
+            minSize=(20, 20), # Allow smaller faces
+            flags=cv2.CASCADE_SCALE_IMAGE
         )
         
         if len(faces) == 0:
