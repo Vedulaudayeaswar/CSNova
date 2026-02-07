@@ -10,18 +10,11 @@ google-auth==2.25.2
 google-auth-oauthlib==1.2.0
 google-auth-httplib2==0.2.0
 
-# RAG and Vector Database
-chromadb==0.4.22
-sentence-transformers>=2.5.0
-huggingface_hub>=0.20.0
-
-# Data Processing
+# Data Processing (lightweight - no heavy ML dependencies!)
+# Career recommendations now use fast rule-based matching
+# Emotion detection moved to browser (TensorFlow.js)
 numpy==1.24.3
 opencv-python-headless==4.8.1.78
-
-# Machine Learning
-tensorflow==2.15.0
-keras==2.15.0
 
 # Database - SQLite is built into Python
 # No additional database packages needed!

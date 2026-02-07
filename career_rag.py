@@ -1,14 +1,5 @@
-"""
-Career Guidance RAG System using Vector Database
-Provides intelligent career recommendations based on student profiles
-Thread-safe for production use
-"""
 
-import chromadb
-from chromadb.config import Settings
-from sentence_transformers import SentenceTransformer
 import json
-import os
 import logging
 from threading import Lock
 
@@ -27,391 +18,515 @@ class CareerRAG:
         return cls._instance
     
     def __init__(self, persist_directory="./chroma_db", force_reset=False):
-        """Initialize the RAG system with ChromaDB and embeddings model"""
-        # Skip re-initialization if already done
+        """Initialize the rule-based recommendation system"""
         if hasattr(self, '_initialized') and self._initialized:
             return
-            
-        self.persist_directory = persist_directory
         
-        # Delete and recreate if force_reset
-        if force_reset:
-            import shutil
-            if os.path.exists(persist_directory):
-                logger.info(f"Resetting database at {persist_directory}...")
-                shutil.rmtree(persist_directory)
+        logger.info("⚡ Initializing fast rule-based career recommendation system...")
         
-        # Initialize ChromaDB
-        self.client = chromadb.Client(Settings(
-            persist_directory=persist_directory,
-            anonymized_telemetry=False
-        ))
+        # Load career database
+        self.careers_db = self._load_career_database()
         
-        # Initialize embedding model
-        logger.info("Loading embedding model...")
-        self.embedder = SentenceTransformer('all-MiniLM-L6-v2')
-        
-        # Get or create collection
-        try:
-            if force_reset:
-                # Delete old collection if exists
-                try:
-                    self.client.delete_collection(name="career_guidance")
-                except:
-                    pass
-            self.collection = self.client.get_or_create_collection(
-                name="career_guidance",
-                metadata={"description": "Career guidance knowledge base"}
-            )
-        except Exception as e:
-            logger.error(f"Error with collection: {e}")
-            # Try to recreate
-            try:
-                self.client.delete_collection(name="career_guidance")
-            except:
-                pass
-            self.collection = self.client.create_collection(
-                name="career_guidance",
-                metadata={"description": "Career guidance knowledge base"}
-            )
-        
-        # Initialize if empty or force reset
-        if self.collection.count() == 0 or force_reset:
-            logger.info("Initializing career database...")
-            self.initialize_career_database()
-        else:
-            logger.info(f"Loaded {self.collection.count()} career entries from database")
-        
+        logger.info(f"✅ Loaded {len(self.careers_db)} careers instantly!")
         self._initialized = True
     
-    def initialize_career_database(self):
-        """Populate vector database with career information"""
-        careers_data = [
+    def _load_career_database(self):
+        """Load comprehensive career database with scoring rules"""
+        return [
+            # ============ TECHNOLOGY & COMPUTER SCIENCE ============
             {
-                "id": "career_001",
                 "name": "Software Developer",
                 "category": "Technology",
-                "description": "Design, develop and maintain software applications. Work with programming languages like Python, Java, JavaScript. Solve complex problems and build innovative solutions.",
-                "emotional_traits": "curious, analytical, patient, problem-solver, creative",
-                "reasoning_traits": "logical thinking, systematic approach, debugging skills, analytical mind",
-                "academic_strengths": "mathematics, computer science, physics, logical reasoning",
-                "skills_required": "Programming, Problem-solving, Algorithm design, Version control, Testing",
-                "education": "BTech Computer Science, BCA, BSc IT, Online coding bootcamps",
+                "description": "Design, develop and maintain software applications using programming languages like Python, Java, JavaScript.",
+                "education_path": "After 10th: Science (PCM+CS). After 12th: BTech CS/IT (4 years), BCA (3 years), BSc CS (3 years)",
                 "salary_range": "₹3-25 Lakhs per year",
-                "job_locations": "IT companies, Startups, Remote work, MNCs",
-                "for_students": "After 10th: Take Science (PCM) or Commerce with CS. After 12th: BTech CS, BCA, or online courses. Start coding now!"
+                "student_guidance": "Start coding now! Learn Python or JavaScript online. Build small projects. Join coding communities on GitHub. Many free resources available!",
+                "job_locations": "Tech companies, Startups, MNCs, Remote work worldwide",
+                "emotional_match": {"curiosity": 3, "confidence": 2, "patience": 2},
+                "reasoning_match": {"logic": 3, "analysis": 3, "problem_solving": 3},
+                "academic_match": {"computer_science": 3, "mathematics": 2, "physics": 1}
             },
             {
-                "id": "career_002",
-                "name": "Doctor (Medical)",
-                "category": "Healthcare",
-                "description": "Diagnose and treat patients, perform surgeries, save lives. Requires dedication, empathy, and continuous learning.",
-                "emotional_traits": "empathetic, caring, stress-tolerant, compassionate, responsible",
-                "reasoning_traits": "quick decision-making, analytical diagnosis, critical thinking",
-                "academic_strengths": "biology, chemistry, physics, memorization skills",
-                "skills_required": "Medical knowledge, Patient care, Communication, Decision-making, Precision",
-                "education": "After 10th: Science (PCB). After 12th: NEET exam, MBBS (5.5 years), Specialization (3+ years)",
-                "salary_range": "₹6-50+ Lakhs per year",
-                "job_locations": "Hospitals, Clinics, Private practice, Research",
-                "for_students": "Very high competition. Need strong Biology and Chemistry. Start NEET preparation early!"
+                "name": "Data Scientist",
+                "category": "Technology",
+                "description": "Analyze data, build ML models, help companies make data-driven decisions. Hot career in 2026!",
+                "education_path": "After 12th: BTech CS/IT, BSc Data Science/Statistics (3-4 years). Learn Python, ML, Statistics online!",
+                "salary_range": "₹5-30 Lakhs per year",
+                "student_guidance": "High demand! Learn Python and mathematics. Practice on Kaggle. Many online courses available. Great career prospects!",
+                "job_locations": "Tech companies, Startups, Banks, E-commerce, Consulting firms, Remote",
+                "emotional_match": {"curiosity": 3, "analytical": 3},
+                "reasoning_match": {"analysis": 3, "logic": 3, "pattern_recognition": 3},
+                "academic_match": {"mathematics": 3, "computer_science": 2, "statistics": 3}
             },
             {
-                "id": "career_003",
-                "name": "Graphic Designer",
-                "category": "Creative",
-                "description": "Create visual content for brands, websites, advertisements. Combine art with technology.",
-                "emotional_traits": "creative, artistic, detail-oriented, imaginative, expressive",
-                "reasoning_traits": "visual thinking, composition skills, color theory understanding",
-                "academic_strengths": "arts, creativity, visual communication",
-                "skills_required": "Photoshop, Illustrator, Creativity, Typography, Color theory",
-                "education": "After 10th: Any stream. After 12th: Design diploma, BSc Animation, Online courses (Udemy, YouTube)",
-                "salary_range": "₹2-10 Lakhs per year",
-                "job_locations": "Agencies, Freelance, Studios, Marketing companies",
-                "for_students": "Build portfolio early. Practice daily. Learn Adobe tools. No specific stream required!"
+                "name": "Cyber Security Expert",
+                "category": "Technology",
+                "description": "Protect systems from hackers. Prevent cyber attacks. High demand profession securing digital world.",
+                "education_path": "After 12th: BTech CS (Cyber Security specialization), Certifications (CEH, CISSP). Online courses available!",
+                "salary_range": "₹4-20 Lakhs per year",
+                "student_guidance": "Learn networking, ethical hacking. Practice on platforms like HackTheBox. Certifications matter a lot!",
+                "job_locations": "IT companies, Banks, Government, Defense, Consulting",
+                "emotional_match": {"curiosity": 3, "vigilance": 3},
+                "reasoning_match": {"logic": 3, "problem_solving": 3, "analysis": 3},
+                "academic_match": {"computer_science": 3, "mathematics": 2}
             },
+            
+            # ============ ENGINEERING - ALL BRANCHES ============
             {
-                "id": "career_004",
-                "name": "Chartered Accountant (CA)",
-                "category": "Finance",
-                "description": "Handle finances, audits, taxation, and accounting for businesses. Highly respected profession.",
-                "emotional_traits": "detail-oriented, disciplined, honest, patient, focused",
-                "reasoning_traits": "numerical aptitude, logical analysis, attention to detail",
-                "academic_strengths": "mathematics, accounts, commerce, economics",
-                "skills_required": "Accounting, Taxation, Auditing, Financial analysis, Ethics",
-                "education": "After 10th: Commerce recommended. After 12th: CA Foundation, Intermediate, Final (4-5 years total)",
-                "salary_range": "₹6-25+ Lakhs per year",
-                "job_locations": "CA firms, Corporate, Banking, Own practice",
-                "for_students": "Tough but rewarding. Need strong maths and dedication. Can start after 12th!"
-            },
-            {
-                "id": "career_005",
                 "name": "Civil Engineer",
                 "category": "Engineering",
-                "description": "Design and build infrastructure like roads, bridges, buildings. Shape the physical world.",
-                "emotional_traits": "practical, patient, visionary, responsible, collaborative",
-                "reasoning_traits": "spatial thinking, problem-solving, calculation skills",
-                "academic_strengths": "mathematics, physics, drawing, engineering mechanics",
-                "skills_required": "AutoCAD, Structural design, Project management, Site supervision",
-                "education": "After 10th: Science (PCM). After 12th: BTech Civil Engineering (4 years), Diploma (3 years)",
+                "description": "Design and build infrastructure like roads, bridges, buildings. Shape the physical world around us.",
+                "education_path": "After 12th (PCM): BTech Civil Engineering (4 years), Diploma (3 years). JEE/state entrance exams.",
                 "salary_range": "₹3-15 Lakhs per year",
-                "job_locations": "Construction companies, Government, Consultancy, Own firm",
-                "for_students": "Need good Maths and Physics. Site visits required. Great for nation-building!"
+                "student_guidance": "Need good Maths and Physics. Site visits required. Great for nation-building! Steady career with government jobs.",
+                "job_locations": "Construction companies, Government PWD, Consultancy, Contractors",
+                "emotional_match": {"patience": 2, "practical": 3},
+                "reasoning_match": {"spatial_thinking": 3, "problem_solving": 2},
+                "academic_match": {"mathematics": 2, "physics": 3}
             },
             {
-                "id": "career_006",
-                "name": "Teacher/Educator",
-                "category": "Education",
-                "description": "Educate and inspire the next generation. Share knowledge and shape young minds.",
-                "emotional_traits": "patient, empathetic, passionate, communicative, nurturing",
-                "reasoning_traits": "clear explanation, adaptability, creative teaching methods",
-                "academic_strengths": "subject expertise, communication skills",
-                "skills_required": "Communication, Subject knowledge, Classroom management, Patience, Creativity",
-                "education": "After 12th: BA/BSc + BEd (2 years), Specialization in subject. Can teach after graduation too!",
-                "salary_range": "₹2-10 Lakhs per year (varies by institution)",
-                "job_locations": "Schools, Colleges, Coaching centers, Online teaching",
-                "for_students": "Choose your favorite subject. Need good communication. Very fulfilling career!"
-            },
-            {
-                "id": "career_007",
-                "name": "Data Scientist",
-                "category": "Technology/Analytics",
-                "description": "Analyze data to find insights, build ML models, help companies make decisions. Hot career!",
-                "emotional_traits": "curious, analytical, detail-oriented, problem-solver",
-                "reasoning_traits": "statistical thinking, pattern recognition, logical analysis",
-                "academic_strengths": "mathematics, statistics, computer science, analytics",
-                "skills_required": "Python, Statistics, Machine Learning, Data visualization, SQL",
-                "education": "After 12th: BTech CS/IT, BSc Data Science, Statistics. Learn Python and ML online!",
-                "salary_range": "₹5-30 Lakhs per year",
-                "job_locations": "Tech companies, Startups, Banks, E-commerce, Remote",
-                "for_students": "High demand! Learn Python and math. Many online courses available. Great pay!"
-            },
-            {
-                "id": "career_008",
-                "name": "Digital Marketing Specialist",
-                "category": "Marketing/Business",
-                "description": "Promote products online through SEO, social media, ads. Help businesses grow digitally.",
-                "emotional_traits": "creative, communicative, trend-aware, persuasive",
-                "reasoning_traits": "analytical thinking, strategy planning, data interpretation",
-                "academic_strengths": "communication, creativity, business understanding",
-                "skills_required": "SEO, Social media, Content creation, Analytics, Ad campaigns",
-                "education": "After 12th: Any degree + Digital marketing courses (3-6 months). Learn online!",
-                "salary_range": "₹3-15 Lakhs per year",
-                "job_locations": "Marketing agencies, Companies, Freelance, Startups",
-                "for_students": "No specific stream needed. Start learning now. Create your own social media presence!"
-            },
-            {
-                "id": "career_009",
-                "name": "Psychologist/Counselor",
-                "category": "Healthcare/Social",
-                "description": "Help people overcome mental health issues, provide therapy, improve lives.",
-                "emotional_traits": "empathetic, patient, good listener, non-judgmental, caring",
-                "reasoning_traits": "analytical assessment, understanding human behavior",
-                "academic_strengths": "psychology, biology, communication",
-                "skills_required": "Active listening, Empathy, Assessment, Counseling techniques, Ethics",
-                "education": "After 12th: BA/BSc Psychology (3 years), MA Psychology, Clinical training, License",
-                "salary_range": "₹3-12 Lakhs per year",
-                "job_locations": "Hospitals, Clinics, Schools, NGOs, Private practice",
-                "for_students": "Growing field in India. Need empathy and patience. Very meaningful work!"
-            },
-            {
-                "id": "career_010",
                 "name": "Mechanical Engineer",
                 "category": "Engineering",
                 "description": "Design machines, engines, mechanical systems. Work in manufacturing, automobiles, robotics.",
-                "emotional_traits": "practical, innovative, problem-solver, hands-on",
-                "reasoning_traits": "mechanical aptitude, spatial thinking, physics understanding",
-                "academic_strengths": "mathematics, physics, mechanics, design",
-                "skills_required": "CAD, Manufacturing, Thermodynamics, Material science, Problem-solving",
-                "education": "After 10th: Science (PCM). After 12th: BTech Mechanical (4 years), Diploma (3 years)",
+                "education_path": "After 12th (PCM): BTech Mechanical (4 years), Diploma (3 years). Core engineering branch.",
                 "salary_range": "₹3-18 Lakhs per year",
-                "job_locations": "Manufacturing, Automobile, Core industries, Consulting",
-                "for_students": "Traditional but stable. Good for those who love machines. Many job opportunities!"
+                "student_guidance": "Traditional but stable. Good for those who love machines. CAD software skills important. Many job opportunities!",
+                "job_locations": "Manufacturing, Automobile, Aerospace, Core industries",
+                "emotional_match": {"practical": 3, "innovation": 2},
+                "reasoning_match": {"spatial_thinking": 3, "problem_solving": 2},
+                "academic_match": {"physics": 3, "mathematics": 2}
             },
             {
-                "id": "career_011",
+                "name": "Electrical Engineer",
+                "category": "Engineering",
+                "description": "Work with electrical systems, power generation, transmission. Design circuits and electrical equipment.",
+                "education_path": "After 12th (PCM): BTech Electrical (4 years). Strong physics needed.",
+                "salary_range": "₹3-16 Lakhs per year",
+                "student_guidance": "Focus on Physics and Maths. Good government job opportunities (Power sector, Railways). Core branch with stability.",
+                "job_locations": "Power plants, Electrical companies, Government, Manufacturing",
+                "emotional_match": {"precision": 3, "practical": 2},
+                "reasoning_match": {"analytical": 3, "problem_solving": 2},
+                "academic_match": {"physics": 3, "mathematics": 2}
+            },
+            {
+                "name": "Electronics Engineer",
+                "category": "Engineering",
+                "description": "Design electronic devices, circuits, embedded systems. Work with microcontrollers, IoT, robotics.",
+                "education_path": "After 12th (PCM): BTech ECE/EEE (4 years). Mix of electronics and communication.",
+                "salary_range": "₹3-18 Lakhs per year",
+                "student_guidance": "Learn Arduino/Raspberry Pi now! Good mix of hardware and software. IoT is booming!",
+                "job_locations": "Electronics companies, Telecom, Embedded systems, R&D",
+                "emotional_match": {"curiosity": 3, "technical": 3},
+                "reasoning_match": {"logic": 3, "problem_solving": 3},
+                "academic_match": {"physics": 3, "electronics": 3, "mathematics": 2}
+            },
+            {
+                "name": "Chemical Engineer",
+                "category": "Engineering",
+                "description": "Work in chemical plants, pharmaceuticals, petroleum. Design chemical processes and products.",
+                "education_path": "After 12th (PCM): BTech Chemical Engineering (4 years). Chemistry + Math important.",
+                "salary_range": "₹3-20 Lakhs per year",
+                "student_guidance": "Good for chemistry lovers. Oil & gas companies pay well. Core branch with good opportunities.",
+                "job_locations": "Chemical plants, Pharmaceutical companies, Oil & Gas, Refineries",
+                "emotional_match": {"precision": 3, "safety_conscious": 2},
+                "reasoning_match": {"analytical": 3, "systematic": 2},
+                "academic_match": {"chemistry": 3, "mathematics": 2, "physics": 2}
+            },
+            {
+                "name": "Aerospace Engineer",
+                "category": "Engineering",
+                "description": "Design aircraft, spacecraft, satellites. Work in aviation and space technology.",
+                "education_path": "After 12th (PCM): BTech Aerospace (4 years). Top colleges: IITs, IISc. Very competitive!",
+                "salary_range": "₹4-25 Lakhs per year",
+                "student_guidance": "Dream big! ISRO, HAL, Airbus hire. Very competitive field. Need excellent grades.",
+                "job_locations": "ISRO, HAL, Private aerospace companies, Research",
+                "emotional_match": {"ambition": 3, "precision": 3},
+                "reasoning_match": {"spatial_thinking": 3, "physics_application": 3},
+                "academic_match": {"physics": 3, "mathematics": 3}
+            },
+            
+            # ============ MEDICAL & HEALTHCARE ============
+            {
+                "name": "Doctor (MBBS)",
+                "category": "Healthcare",
+                "description": "Diagnose and treat patients. Save lives and improve health. Highly respected profession with social impact.",
+                "education_path": "After 10th: Science (PCB). After 12th: NEET exam (very competitive), MBBS (5.5 years), MD/MS specialization optional",
+                "salary_range": "₹6-30+ Lakhs per year",
+                "student_guidance": "Focus on Biology and Chemistry NOW. NEET preparation is tough but very rewarding. Start coaching early. Prestigious career!",
+                "job_locations": "Hospitals, Clinics, Government health services, Private practice, Medical colleges",
+                "emotional_match": {"empathy": 3, "stress": -2, "confidence": 2, "helping": 3},
+                "reasoning_match": {"analysis": 2, "decision": 3, "critical_thinking": 3},
+                "academic_match": {"biology": 3, "chemistry": 3, "physics": 1}
+            },
+            {
+                "name": "Pharmacist",
+                "category": "Healthcare",
+                "description": "Dispense medicines, work in drug development, ensure medication safety. Growing pharmaceutical industry.",
+                "education_path": "After 12th (PCB/PCM): B.Pharmacy (4 years), D.Pharmacy (2 years). GPAT for higher studies.",
+                "salary_range": "₹3-12 Lakhs per year",
+                "student_guidance": "Good alternative to MBBS. Pharmaceutical industry is huge in India. Can open own pharmacy later!",
+                "job_locations": "Hospitals, Pharmacies, Drug companies, Research labs",
+                "emotional_match": {"helping": 2, "attention_to_detail": 3},
+                "reasoning_match": {"precision": 3, "analytical": 2},
+                "academic_match": {"chemistry": 3, "biology": 2}
+            },
+            {
+                "name": "Physiotherapist",
+                "category": "Healthcare",
+                "description": "Help patients recover from injuries. Improve mobility and reduce pain. Growing demand in sports.",
+                "education_path": "After 12th (PCB): BPT (4.5 years including internship). Practical hands-on work.",
+                "salary_range": "₹3-10 Lakhs per year",
+                "student_guidance": "Great for those who like physical activity. Sports teams need physiotherapists. Can practice independently!",
+                "job_locations": "Hospitals, Sports clubs, Clinics, Home visits, Own practice",
+                "emotional_match": {"empathy": 3, "patience": 3, "physical": 2},
+                "reasoning_match": {"practical": 3, "problem_solving": 2},
+                "academic_match": {"biology": 3, "anatomy": 2}
+            },
+            {
+                "name": "Nurse",
+                "category": "Healthcare",
+                "description": "Provide patient care, assist doctors, manage hospital wards. Critical healthcare profession.",
+                "education_path": "After 12th (PCB): BSc Nursing (4 years), GNM (3 years). Government jobs available.",
+                "salary_range": "₹2-8 Lakhs per year (Higher abroad)",
+                "student_guidance": "Noble profession. Good scope abroad (Gulf countries, UK, USA). Government jobs with pension!",
+                "job_locations": "Hospitals, Government health, Nursing homes, Abroad opportunities",
+                "emotional_match": {"empathy": 3, "patience": 3, "caring": 3},
+                "reasoning_match": {"attention_to_detail": 3, "emergency_thinking": 2},
+                "academic_match": {"biology": 2}
+            },
+            {
+                "name": "Dentist (BDS)",
+                "category": "Healthcare",
+                "description": "Treat dental problems, perform surgeries, improve oral health. Own clinic potential.",
+                "education_path": "After 12th (PCB): NEET exam, BDS (5 years), MDS specialization optional.",
+                "salary_range": "₹5-20 Lakhs per year",
+                "student_guidance": "Good work-life balance. Can open own clinic. Less competitive than MBBS but still needs NEET.",
+                "job_locations": "Dental hospitals, Clinics, Own practice, Corporate dentistry",
+                "emotional_match": {"precision": 3, "confidence": 2},
+                "reasoning_match": {"attention_to_detail": 3, "dexterity": 2},
+                "academic_match": {"biology": 3, "chemistry": 2}
+            },
+            
+            # ============ SCIENCE RESEARCH ============
+            {
+                "name": "Research Scientist",
+                "category": "Science",
+                "description": "Conduct research in labs. Discover new knowledge. Work on cutting-edge science and technology.",
+                "education_path": "After 12th: BSc in chosen field (3 years), MSc (2 years), PhD (4-5 years). Long journey but fulfilling!",
+                "salary_range": "₹4-15 Lakhs per year (Academic), Higher in companies",
+                "student_guidance": "For those passionate about science. Publish papers. Contribute to human knowledge. Patience required!",
+                "job_locations": "Research institutes (IISc, IITs), CSIR labs, Companies, Universities",
+                "emotional_match": {"curiosity": 3, "patience": 3, "dedication": 3},
+                "reasoning_match": {"analytical": 3, "hypothesis_testing": 3, "systematic": 3},
+                "academic_match": {"physics": 2, "chemistry": 2, "biology": 2, "mathematics": 2}
+            },
+            {
+                "name": "Biotechnologist",
+                "category": "Science",
+                "description": "Use biology for technology. Work in genetic engineering, drug development, agriculture.",
+                "education_path": "After 12th (PCB/PCMB): BSc/BTech Biotechnology (3-4 years). MSc for better opportunities.",
+                "salary_range": "₹3-12 Lakhs per year",
+                "student_guidance": "Emerging field! Mix of biology and technology. Biotech companies growing fast in India.",
+                "job_locations": "Biotech companies, Pharma, Research labs, Agriculture",
+                "emotional_match": {"curiosity": 3, "innovation": 3},
+                "reasoning_match": {"analytical": 3, "experimental": 3},
+                "academic_match": {"biology": 3, "chemistry": 2}
+            },
+            
+            # ============ COMMERCE & FINANCE ============
+            {
+                "name": "Chartered Accountant (CA)",
+                "category": "Finance",
+                "description": "Handle finances, audits, taxation for businesses. Highly respected and well-paid profession.",
+                "education_path": "After 12th: CA Foundation, Intermediate, Final (4-5 years total). Commerce stream recommended but not mandatory.",
+                "salary_range": "₹6-25+ Lakhs per year",
+                "student_guidance": "Tough but very rewarding. Need strong maths and dedication. Can start preparation after 12th! Own practice possible.",
+                "job_locations": "CA firms, Corporate finance, Banking, Consulting, Own practice",
+                "emotional_match": {"patience": 3, "confidence": 2, "stress": -1, "precision": 3},
+                "reasoning_match": {"analysis": 3, "logic": 2, "attention_to_detail": 3},
+                "academic_match": {"mathematics": 3, "economics": 2, "accountancy": 3}
+            },
+            {
+                "name": "Investment Banker",
+                "category": "Finance",
+                "description": "Help companies raise money, manage mergers. High-paying but demanding finance career.",
+                "education_path": "After 12th: BCom/BBA (3 years), MBA Finance (2 years), CA/CFA certifications help.",
+                "salary_range": "₹8-40+ Lakhs per year",
+                "student_guidance": "Very high pay! Need excellent math and communication. Long hours but great rewards. IIMs preferred.",
+                "job_locations": "Investment banks, Financial institutions, Mumbai/Delhi/Bangalore",
+                "emotional_match": {"confidence": 3, "stress": 1, "ambition": 3},
+                "reasoning_match": {"analytical": 3, "quick_thinking": 3, "risk_assessment": 3},
+                "academic_match": {"mathematics": 3, "economics": 2}
+            },
+            {
+                "name": "Company Secretary (CS)",
+                "category": "Finance",
+                "description": "Ensure company legal compliance. Handle corporate governance, secretarial work.",
+                "education_path": "After 12th: CS Foundation, Executive, Professional (3-4 years). Commerce background helpful.",
+                "salary_range": "₹4-15 Lakhs per year",
+                "student_guidance": "Good alternative to CA. Less competition. Important role in companies. Own practice possible.",
+                "job_locations": "Corporate companies, Law firms, Consulting, Own practice",
+                "emotional_match": {"precision": 3, "organization": 3},
+                "reasoning_match": {"attention_to_detail": 3, "legal_thinking": 2},
+                "academic_match": {"accountancy": 2, "economics": 2}
+            },
+            
+            # ============ CREATIVE FIELDS ============
+            {
+                "name": "Graphic Designer",
+                "category": "Creative",
+                "description": "Create visual content for brands, websites, social media. Mix art with technology.",
+                "education_path": "After 12th: BFA/BDes in Graphic Design (3-4 years), Diploma courses (6 months-2 years), Online learning possible!",
+                "salary_range": "₹2-10 Lakhs per year (Freelance can earn more)",
+                "student_guidance": "Build portfolio early. Practice daily. Learn Adobe tools (Photoshop, Illustrator, Figma). No specific stream required!",
+                "job_locations": "Design agencies, Freelance, Studios, Marketing companies, Remote work",
+                "emotional_match": {"curiosity": 3, "creativity": 3, "artistic": 3},
+                "reasoning_match": {"visual_thinking": 3, "creativity": 3},
+                "academic_match": {"art": 3, "computer_science": 1}
+            },
+            {
                 "name": "Content Writer/Blogger",
-                "category": "Creative/Media",
-                "description": "Write articles, blogs, website content. Express ideas through words.",
-                "emotional_traits": "creative, expressive, curious, self-motivated",
-                "reasoning_traits": "clear thinking, storytelling, research skills",
-                "academic_strengths": "language, writing, creativity, communication",
-                "skills_required": "Writing, SEO, Research, Grammar, Creativity, Editing",
-                "education": "After 12th: Any degree. BA English/Journalism helpful. Learn online!",
-                "salary_range": "₹2-8 Lakhs per year (freelance can earn more)",
-                "job_locations": "Media houses, Agencies, Freelance, Remote work, Companies",
-                "for_students": "Start writing now! Create a blog. No specific stream required. Flexible career!"
+                "category": "Creative",
+                "description": "Write articles, blogs, website content. Express ideas through words. Digital era profession.",
+                "education_path": "Any degree works! BA English/Journalism helpful (3 years). Learn writing online. Start blogging now!",
+                "salary_range": "₹2-8 Lakhs per year (Successful bloggers earn more)",
+                "student_guidance": "Start writing NOW! Create your own blog. Read a lot. No specific stream required. Very flexible career!",
+                "job_locations": "Media houses, Content agencies, Freelance, Remote work worldwide",
+                "emotional_match": {"creativity": 3, "expression": 3, "communication": 2},
+                "reasoning_match": {"clear_thinking": 2, "communication": 3},
+                "academic_match": {"languages": 3, "english": 2}
             },
             {
-                "id": "career_012",
+                "name": "Fashion Designer",
+                "category": "Creative",
+                "description": "Design clothes, accessories, fashion trends. Create your own brand or work for fashion houses.",
+                "education_path": "After 12th: NIFT entrance, Fashion Design degree (4 years), Diploma courses available.",
+                "salary_range": "₹2-15 Lakhs per year (Own brand can earn much more)",
+                "student_guidance": "Creative field. Learn sketching and stitching. Follow fashion trends. Can be very lucrative with own brand!",
+                "job_locations": "Fashion houses, Own brand, Textile industry, Freelance",
+                "emotional_match": {"creativity": 3, "artistic": 3, "trendy": 2},
+                "reasoning_match": {"visual_thinking": 3, "innovation": 2},
+                "academic_match": {"art": 2}
+            },
+            
+            # ============ EDUCATION ============
+            {
+                "name": "Teacher/Educator",
+                "category": "Education",
+                "description": "Educate and inspire next generation. Share knowledge and shape young minds. Respected profession.",
+                "education_path": "After 12th: BA/BSc in your subject (3 years) + BEd (2 years). Can specialize in any subject you love!",
+                "salary_range": "₹2-10 Lakhs per year (Private schools pay well)",
+                "student_guidance": "Choose your favorite subject to teach. Need good communication. Very fulfilling career with social impact!",
+                "job_locations": "Schools, Colleges, Coaching centers, Online teaching platforms",
+                "emotional_match": {"empathy": 3, "patience": 3, "communication": 3, "helping": 3},
+                "reasoning_match": {"explanation": 3, "patience": 2},
+                "academic_match": {"any_subject": 2}
+            },
+            
+            # ============ BUSINESS & MANAGEMENT ============
+            {
                 "name": "Entrepreneur/Business Owner",
                 "category": "Business",
                 "description": "Start and run your own business. Be your own boss. Take risks and create value.",
-                "emotional_traits": "confident, risk-taker, resilient, visionary, leadership",
-                "reasoning_traits": "decision-making, strategic thinking, opportunity recognition",
-                "academic_strengths": "business understanding, creativity, practical knowledge",
-                "skills_required": "Leadership, Business planning, Marketing, Finance, Risk management",
-                "education": "After 12th: BBA/BCom helpful but not mandatory. Learn from experience and mentors!",
-                "salary_range": "Unlimited potential (varies greatly)",
-                "job_locations": "Own business, Startups, E-commerce, Services",
-                "for_students": "Any stream works. Start small now. Learn business basics. High risk, high reward!"
+                "education_path": "BBA/BCom helpful (3 years) but not mandatory. Learn from experience! MBA can help (2 years).",
+                "salary_range": "Unlimited potential (Can be ₹0 to Crores)",
+                "student_guidance": "Any stream works. Start small business now (even online). Learn business basics. High risk, high reward!",
+                "job_locations": "Own business, Startups, E-commerce, Service business",
+                "emotional_match": {"confidence": 3, "risk": 3, "leadership": 3, "ambition": 3},
+                "reasoning_match": {"decision": 3, "strategy": 3, "innovation": 3},
+                "academic_match": {"any": 1}
+            },
+            {
+                "name": "Marketing Manager",
+                "category": "Business",
+                "description": "Promote products/services. Manage brand strategy. Connect companies with customers.",
+                "education_path": "After 12th: BBA/BCom (3 years), MBA Marketing (2 years). Any stream can do BBA!",
+                "salary_range": "₹4-20 Lakhs per year",
+                "student_guidance": "Need creativity and communication. Learn digital marketing. Growing field with good pay!",
+                "job_locations": "Companies, Agencies, Startups, E-commerce",
+                "emotional_match": {"creativity": 2, "communication": 3, "confidence": 2},
+                "reasoning_match": {"strategy": 3, "understanding_people": 3},
+                "academic_match": {"any": 1}
+            },
+            {
+                "name": "Digital Marketing Specialist",
+                "category": "Marketing",
+                "description": "Promote products online through SEO, social media, Google ads. Help businesses grow digitally.",
+                "education_path": "Any degree + Digital marketing courses (3-6 months). Many online certifications! Can start with any stream.",
+                "salary_range": "₹3-15 Lakhs per year",
+                "student_guidance": "No specific stream needed. Start learning NOW. Create social media presence! Certifications by Google available free!",
+                "job_locations": "Marketing agencies, All types of companies, Freelance, Startups, Remote",
+                "emotional_match": {"creativity": 3, "communication": 3, "tech_savvy": 2},
+                "reasoning_match": {"strategy": 2, "analytics": 2},
+                "academic_match": {"any": 1}
+            },
+            
+            # ============ PSYCHOLOGY & COUNSELING ============
+            {
+                "name": "Psychologist/Counselor",
+                "category": "Healthcare",
+                "description": "Help people overcome mental health issues, provide therapy, improve lives. Growing importance in India.",
+                "education_path": "After 12th: BA/BSc Psychology (3 years), MA Psychology (2 years), Clinical training, RCI License needed for practice.",
+                "salary_range": "₹3-12 Lakhs per year (Private practice can earn more)",
+                "student_guidance": "Growing field in India! Need empathy and patience. Very meaningful work. Mental health awareness increasing!",
+                "job_locations": "Hospitals, Clinics, Schools, NGOs, Corporate wellness, Private practice",
+                "emotional_match": {"empathy": 3, "patience": 3, "listening": 3, "helping": 3},
+                "reasoning_match": {"analysis": 2, "understanding": 3, "non_judgmental": 3},
+                "academic_match": {"psychology": 3, "biology": 1}
+            },
+            
+            # ============ ARCHITECTURE ============
+            {
+                "name": "Architect",
+                "category": "Design",
+                "description": "Design buildings, houses, urban spaces. Blend art, science and technology. Creative+Technical career.",
+                "education_path": "After 12th (Any stream but PCM helpful): BArch (5 years) via NATA exam. Spatial thinking important!",
+                "salary_range": "₹3-20 Lakhs per year (Own practice can earn more)",
+                "student_guidance": "Need creativity AND technical skills. Learn sketching. Software like AutoCAD important. Can have own firm!",
+                "job_locations": "Architecture firms, Construction companies, Own practice, Urban planning",
+                "emotional_match": {"creativity": 3, "artistic": 3, "precision": 2},
+                "reasoning_match": {"spatial_thinking": 3, "visual": 3, "technical": 2},
+                "academic_match": {"mathematics": 2, "physics": 2, "art": 2}
+            },
+            
+            # ============ LAW ============
+            {
+                "name": "Lawyer/Advocate",
+                "category": "Law",
+                "description": "Represent clients in court. Practice law, protect rights, ensure justice. Prestigious profession.",
+                "education_path": "After 12th: LLB (3 years after graduation) OR 5-year integrated BA LLB. CLAT exam for top colleges. Any stream can apply!",
+                "salary_range": "₹3-30+ Lakhs per year",
+                "student_guidance": "Need excellent communication and memory. Read newspapers daily. Top lawyers earn crores! Can practice independently.",
+                "job_locations": "Courts, Law firms, Corporate legal, Own practice",
+                "emotional_match": {"confidence": 3, "communication": 3, "fighting_spirit": 2},
+                "reasoning_match": {"logical": 3, "argumentation": 3, "memory": 3},
+                "academic_match": {"any": 1}
+            },
+            
+            # ============ HOTEL MANAGEMENT & HOSPITALITY ============
+            {
+                "name": "Hotel Manager",
+                "category": "Hospitality",
+                "description": "Manage hotels, resorts. Ensure guest satisfaction. Growing tourism industry in India.",
+                "education_path": "After 12th: BHM - Bachelor of Hotel Management (4 years). Any stream can apply!",
+                "salary_range": "₹3-15 Lakhs per year (International hotels pay more)",
+                "student_guidance": "Need good communication and people skills. Tourism is booming. International opportunities available!",
+                "job_locations": "Hotels, Resorts, Cruise ships, Tourism companies, Abroad opportunities",
+                "emotional_match": {"communication": 3, "patience": 2, "service_oriented": 3},
+                "reasoning_match": {"management": 2, "problem_solving": 2},
+                "academic_match": {"any": 1}
+            },
+            
+            # ============ ANIMATION & GAMING ============
+            {
+                "name": "Game Developer",
+                "category": "Technology",
+                "description": "Create video games. Code game logic, design gameplay. Booming industry in India and worldwide!",
+                "education_path": "After 12th: BTech CS/IT (4 years), BCA (3 years), Game development courses. Learn Unity/Unreal Engine online!",
+                "salary_range": "₹3-20 Lakhs per year (International studios pay more)",
+                "student_guidance": "Play and study games! Learn C#/C++. Build small games now. Growing industry with global opportunities!",
+                "job_locations": "Gaming studios, Indie development, Remote/International opportunities",
+                "emotional_match": {"creativity": 3, "passion": 3, "persistence": 2},
+                "reasoning_match": {"logic": 3, "problem_solving": 3, "creativity": 3},
+                "academic_match": {"computer_science": 3, "mathematics": 2}
+            },
+            {
+                "name": "Animator",
+                "category": "Creative",
+                "description": "Create animations for movies, ads, games. Bring characters to life. Growing VFX industry in India!",
+                "education_path": "After 12th: Animation/VFX courses (1-3 years), Degree programs available. No specific stream required!",
+                "salary_range": "₹2-12 Lakhs per year",
+                "student_guidance": "Learn software like Maya, Blender (free!). Build portfolio. Indian animation industry growing fast!",
+                "job_locations": "Animation studios, VFX companies, Ad agencies, Gaming companies",
+                "emotional_match": {"creativity": 3, "artistic": 3, "patience": 2},
+                "reasoning_match": {"visual_thinking": 3, "attention_to_detail": 2},
+                "academic_match": {"art": 2, "computer_science": 1}
             }
         ]
-        
-        # Prepare data for ChromaDB
-        documents = []
-        metadatas = []
-        ids = []
-        
-        for career in careers_data:
-            # Create rich text representation for embedding
-            doc_text = f"""
-            Career: {career['name']}
-            Category: {career['category']}
-            Description: {career['description']}
-            Emotional Traits: {career['emotional_traits']}
-            Reasoning Skills: {career['reasoning_traits']}
-            Academic Strengths: {career['academic_strengths']}
-            Required Skills: {career['skills_required']}
-            Guidance: {career['for_students']}
-            """
-            
-            documents.append(doc_text)
-            ids.append(career['id'])
-            
-            # Store metadata
-            metadatas.append({
-                "name": career['name'],
-                "category": career['category'],
-                "education": career['education'],
-                "salary": career['salary_range'],
-                "locations": career['job_locations'],
-                "student_info": career['for_students']
-            })
-        
-        # Add to collection
-        self.collection.add(
-            documents=documents,
-            metadatas=metadatas,
-            ids=ids
-        )
-        
-        print(f"Initialized {len(careers_data)} careers in vector database")
     
     def get_career_recommendations(self, user_profile, top_k=3):
         """
-        Get career recommendations based on user profile using RAG
-        
-        Args:
-            user_profile: Dict with emotional_profile, reasoning_profile, academic_profile
-            top_k: Number of recommendations to return
+        Get career recommendations using fast rule-based matching
+        Returns same format as RAG for compatibility
         """
-        # Build query from user profile - more descriptive
-        query_parts = []
+        logger.debug(f"Generating recommendations for profile: {user_profile}")
         
-        if 'emotional_profile' in user_profile:
-            emotional = user_profile['emotional_profile']
-            high_traits = [k.replace('_', ' ') for k, v in emotional.items() if v == 'high']
-            medium_traits = [k.replace('_', ' ') for k, v in emotional.items() if v == 'medium']
-            if high_traits:
-                query_parts.append(f"Strong in {', '.join(high_traits)}")
-            if medium_traits:
-                query_parts.append(f"Moderate {', '.join(medium_traits)}")
+        # Convert profiles to scores
+        emotional_scores = self._convert_profile_to_scores(user_profile.get('emotional_profile', {}))
+        reasoning_scores = self._convert_profile_to_scores(user_profile.get('reasoning_profile', {}))
+        academic_scores = self._convert_profile_to_scores(user_profile.get('academic_profile', {}))
         
-        if 'reasoning_profile' in user_profile:
-            reasoning = user_profile['reasoning_profile']
-            high_skills = [k.replace('_', ' ') for k, v in reasoning.items() if v == 'high']
-            medium_skills = [k.replace('_', ' ') for k, v in reasoning.items() if v == 'medium']
-            if high_skills:
-                query_parts.append(f"Good at {', '.join(high_skills)}")
-            if medium_skills:
-                query_parts.append(f"Can do {', '.join(medium_skills)}")
+        # Score each career
+        career_scores = []
+        for career in self.careers_db:
+            score = self._calculate_match_score(
+                career,
+                emotional_scores,
+                reasoning_scores,
+                academic_scores
+            )
+            career_scores.append((career, score))
         
-        if 'academic_profile' in user_profile:
-            academic = user_profile['academic_profile']
-            high_subjects = [k.replace('_', ' ') for k, v in academic.items() if v == 'high']
-            medium_subjects = [k.replace('_', ' ') for k, v in academic.items() if v == 'medium']
-            if high_subjects:
-                query_parts.append(f"Strong academic interest in {', '.join(high_subjects)}")
-            if medium_subjects:
-                query_parts.append(f"Some interest in {', '.join(medium_subjects)}")
+        # Sort by score descending
+        career_scores.sort(key=lambda x: x[1], reverse=True)
         
-        query_text = ". ".join(query_parts)
-        
-        if not query_text:
-            query_text = "general career guidance for students interested in various fields"
-        
-        print(f"[RAG Query]: {query_text}")
-        
-        # Query vector database
-        results = self.collection.query(
-            query_texts=[query_text],
-            n_results=top_k
-        )
-        
-        # Format recommendations
+        # Return top K
         recommendations = []
+        for career, score in career_scores[:top_k]:
+            recommendations.append({
+                'career_name': career['name'],
+                'category': career['category'],
+                'description': career['description'],
+                'education_path': career['education_path'],
+                'salary_range': career['salary_range'],
+                'student_guidance': career['student_guidance'],
+                'job_locations': career['job_locations'],
+                'match_score': int(score * 100 / 30)  # Normalize to 0-100
+            })
         
-        if results['ids'] and len(results['ids'][0]) > 0:
-            # Get distances for normalization
-            distances = results['distances'][0] if 'distances' in results else []
-            
-            # Find min and max distance for normalization
-            if distances:
-                min_dist = min(distances)
-                max_dist = max(distances)
-                dist_range = max_dist - min_dist if max_dist > min_dist else 1
-            
-            for i in range(len(results['ids'][0])):
-                metadata = results['metadatas'][0][i]
-                distance = distances[i] if distances else 0
-                
-                # Convert distance to similarity score (0-100)
-                # Lower distance = better match
-                # Normalize to 0-100 scale
-                if distances and dist_range > 0:
-                    normalized_score = ((max_dist - distance) / dist_range) * 100
-                    match_score = max(0, min(100, normalized_score))
-                else:
-                    match_score = 50  # Default neutral score
-                
-                recommendations.append({
-                    "career_name": metadata['name'],
-                    "category": metadata['category'],
-                    "education_path": metadata['education'],
-                    "salary_range": metadata['salary'],
-                    "work_locations": metadata['locations'],
-                    "student_guidance": metadata['student_info'],
-                    "match_score": round(match_score, 2)
-                })
-        
+        logger.info(f"Top recommendation: {recommendations[0]['career_name']} ({recommendations[0]['match_score']}%)")
         return recommendations
     
-    def search_careers_by_text(self, query, top_k=5):
-        """Search careers by free text query"""
-        results = self.collection.query(
-            query_texts=[query],
-            n_results=top_k
-        )
+    def _convert_profile_to_scores(self, profile_dict):
+        """Convert high/medium/low to numeric scores"""
+        scores = {}
+        for key, value in profile_dict.items():
+            if value == 'high':
+                scores[key] = 3
+            elif value == 'medium':
+                scores[key] = 2
+            elif value == 'low':
+                scores[key] = 1
+            else:
+                scores[key] = 0
+        return scores
+    
+    def _calculate_match_score(self, career, emotional, reasoning, academic):
+        """Calculate match score for a career"""
+        total_score = 0
         
-        careers = []
-        if results['ids'] and len(results['ids'][0]) > 0:
-            for i in range(len(results['ids'][0])):
-                metadata = results['metadatas'][0][i]
-                careers.append({
-                    "name": metadata['name'],
-                    "category": metadata['category'],
-                    "guidance": metadata['student_info']
-                })
+        # Match emotional traits
+        for trait, weight in career.get('emotional_match', {}).items():
+            user_score = emotional.get(trait, 0)
+            total_score += user_score * weight
         
-        return careers
+        # Match reasoning skills
+        for skill, weight in career.get('reasoning_match', {}).items():
+            user_score = reasoning.get(skill, 0)
+            total_score += user_score * weight
+        
+        # Match academic interests
+        for subject, weight in career.get('academic_match', {}).items():
+            if subject == 'any':
+                # Any academic strength helps a bit
+                total_score += weight * (sum(academic.values()) / max(len(academic), 1))
+            else:
+                user_score = academic.get(subject, 0)
+                total_score += user_score * weight
+        
+        return total_score
 
-
-# Global RAG instance
-_rag_instance = None
 
 def get_rag_instance():
-    """Get or create RAG instance (singleton)"""
-    global _rag_instance
-    if _rag_instance is None:
-        _rag_instance = CareerRAG()
-    return _rag_instance
+    """Get singleton RAG instance"""
+    return CareerRAG()
