@@ -146,7 +146,7 @@ class EmotionDetector {
   async startAnalysis() {
     console.log("🚀 Start Analysis button clicked!");
     console.log("Camera ready:", this.cameraReady);
-    
+
     if (!this.cameraReady) {
       alert("Camera is not ready yet. Please wait...");
       return;
@@ -180,7 +180,7 @@ class EmotionDetector {
 
     try {
       console.log("📸 Capturing frame...");
-      
+
       // Capture current frame from video
       this.ctx.drawImage(
         this.video,
@@ -190,8 +190,11 @@ class EmotionDetector {
         this.canvas.height,
       );
       const imageData = this.canvas.toDataURL("image/jpeg", 0.8);
-      
-      console.log("📤 Sending frame to server:", `${this.API_URL}/emotion/detect`);
+
+      console.log(
+        "📤 Sending frame to server:",
+        `${this.API_URL}/emotion/detect`,
+      );
 
       // Send frame to backend for emotion detection
       const response = await fetch(`${this.API_URL}/emotion/detect`, {
@@ -201,7 +204,16 @@ class EmotionDetector {
         },
         body: JSON.stringify({ image: imageData }),
       });
-      
+
+      console.log("� Response received:", response.status);
+
+      if (!response.ok) {
+        throw new Error(
+          `Server error: ${response.status} ${response.statusText}`,
+        );
+      }
+
+      const result = await response.json();
       console.log("📊 Result:", result);
 
       // Check for API errors
@@ -223,12 +235,14 @@ class EmotionDetector {
       document.getElementById("sessionTime").textContent =
         this.formatTime(currentTime);
       document.getElementById("frameCount").textContent = this.frameCount;
-      
+
       console.log(`✅ Frame ${this.frameCount} processed`);
 
       if (result.success && result.face_detected) {
-        console.log(`😊 Face detected! Emotion: ${result.emotion} (${(result.confidence * 100).toFixed(1)}%)`);
-        
+        console.log(
+          `😊 Face detected! Emotion: ${result.emotion} (${(result.confidence * 100).toFixed(1)}%)`,
+        );
+
         // Process emotions from the trained model
         const emotionData = this.processEmotions(result);
         this.emotionHistory.push({
@@ -249,15 +263,6 @@ class EmotionDetector {
     } catch (error) {
       console.error("🔥 Detection error:", error);
       console.error("Error details:", error.message, error.stack);
-
-        // Aggregate stats
-        this.aggregateStats(emotionData);
-      } else {
-        // No face detected
-        this.updateEmotionDisplay(null);
-      }
-    } catch (error) {
-      console.error("Detection error:", error);
     }
 
     // Continue detection loop (reduce frequency to ~2 FPS to avoid overwhelming the server)
