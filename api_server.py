@@ -95,7 +95,22 @@ try:
             break
     
     if model_path:
+        # Load model without compilation for faster loading
         emotion_model = load_model(model_path, compile=False)
+        
+        # Compile with optimized settings for CPU inference
+        emotion_model.compile(
+            optimizer='adam',
+            loss='categorical_crossentropy',
+            metrics=['accuracy']
+        )
+        
+        # Warm up the model with a dummy prediction
+        logger.info("Warming up emotion model...")
+        dummy_face = np.zeros((1, 48, 48, 1), dtype='float32')
+        _ = emotion_model.predict(dummy_face, verbose=0, batch_size=1)
+        logger.info("Model warmed up!")
+        
         emotion_labels = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
         face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
         
