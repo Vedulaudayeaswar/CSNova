@@ -38,13 +38,13 @@ env/
 *.sqlite3
 chroma_db/
 
-# Model checkpoints (too large for git)
-# *.h5  # COMMENTED OUT - we need emotion_cnn_fer2013.h5 for production!
+# Model checkpoints (not needed - using client-side TensorFlow.js)
+*.h5
 *.pt
 *.pth
 *.ckpt
 
-# BUT exclude transformer checkpoints (they're too large)
+# Exclude transformer checkpoints
 tiny_transformer_lm/tiny_transformer_lm/checkpoints/*.pt
 tiny_transformer_lm/tiny_transformer_lm/checkpoints_structured/*.pt
 

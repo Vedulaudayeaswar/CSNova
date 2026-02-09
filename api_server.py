@@ -1,8 +1,4 @@
 import os
-# Disable TensorFlow to avoid tf-keras dependency
-os.environ['TRANSFORMERS_NO_TF'] = '1'
-os.environ['USE_TORCH'] = '1'
-
 from flask import Flask, request, jsonify, send_from_directory, session
 from flask_cors import CORS
 from flask_limiter import Limiter
@@ -14,11 +10,6 @@ import random
 from datetime import datetime, timedelta
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
-# Lazy import RAG to avoid blocking server startup
-# from career_rag import get_rag_instance
-import numpy as np
-import cv2
-import base64
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -34,7 +25,13 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Note: TensorFlow/Keras not needed - using client-side emotion detection with TensorFlow.js
+# ✅ LIGHTWEIGHT ARCHITECTURE:
+# - Face detection: Client-side using TensorFlow.js (face-api.js)
+# - Career guidance: Rule-based matching (no ML needed)
+# - No heavy dependencies required!
+logger.info("✅ Using lightweight client-side architecture")
+logger.info("   - Face detection: TensorFlow.js (browser)")
+logger.info("   - Career guidance: Rule-based matching")
 
 app = Flask(__name__, static_folder='.', static_url_path='')
 app.secret_key = os.environ.get('SECRET_KEY', os.urandom(24).hex())
@@ -74,10 +71,6 @@ if not EMAIL_ADDRESS and os.environ.get('FLASK_ENV') == 'production':
 
 # Database configuration - SQLite (no installation needed!)
 DB_FILE = os.environ.get('DATABASE_URL', 'career_guidance.db')
-
-# Note: Emotion detection now runs client-side using TensorFlow.js (face-api.js)
-# Server-side emotion model loading removed to reduce memory usage and startup time
-logger.info("✅ Using client-side emotion detection (TensorFlow.js)")
 
 # Initialize RAG system lazily (after server starts)
 logger.info("RAG system will be loaded on first use")
@@ -1020,7 +1013,7 @@ def health_check():
     return jsonify({
         'status': 'healthy',
         'timestamp': datetime.now().isoformat(),
-        'emotion_model_loaded': emotion_model is not None,
+        'emotion_detection': 'client-side (TensorFlow.js)',
         'rag_system_loaded': get_rag_system() is not None
     })
 
@@ -1105,133 +1098,20 @@ def explore_careers():
 @app.route('/api/emotion/detect', methods=['POST'])
 @limiter.limit("30 per minute")
 def detect_emotion():
-    """Detect emotion from webcam frame using trained CNN model"""
+    """Emotion detection endpoint - now handled client-side with TensorFlow.js"""
     try:
-        logger.info("Emotion detection request received")
-        
-        if not emotion_model or not face_cascade:
-            logger.error("Emotion detection requested but model not loaded")
-            return jsonify({
-                'error': 'Emotion detection model not available', 
-                'details': 'Model file not found on server. Please contact administrator.'
-            }), 503
-        
-        data = request.get_json()
-        image_data = data.get('image')
-        
-        if not image_data:
-            logger.warning("No image data in request")
-            return jsonify({'error': 'No image provided'}), 400
-        
-        # Decode base64 image
-        try:
-            image_data = image_data.split(',')[1] if ',' in image_data else image_data
-            image_bytes = base64.b64decode(image_data)
-            nparr = np.frombuffer(image_bytes, np.uint8)
-            frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-        except Exception as decode_error:
-            logger.error(f"Image decoding error: {decode_error}")
-            return jsonify({'error': 'Failed to decode image'}), 400
-        
-        if frame is None:
-            logger.error("Frame is None after decoding")
-            return jsonify({'error': 'Invalid image data'}), 400
-        
-        logger.debug(f"Frame shape: {frame.shape}")
-        
-        # Aggressively resize images to reduce processing time
-        max_dimension = 640  # Balanced size
-        height, width = frame.shape[:2]
-        if max(height, width) > max_dimension:
-            scale = max_dimension / max(height, width)
-            new_width = int(width * scale)
-            new_height = int(height * scale)
-            frame = cv2.resize(frame, (new_width, new_height), interpolation=cv2.INTER_LINEAR)
-            logger.debug(f"Resized frame to: {new_width}x{new_height}")
-        
-        # Convert to grayscale
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        
-        # Apply histogram equalization for better face detection
-        gray = cv2.equalizeHist(gray)
-        
-        # Detect faces with relaxed parameters for better detection
-        faces = face_cascade.detectMultiScale(
-            gray, 
-            scaleFactor=1.1,  # More sensitive
-            minNeighbors=3,   # Lower threshold
-            minSize=(20, 20), # Allow smaller faces
-            flags=cv2.CASCADE_SCALE_IMAGE
-        )
-        
-        logger.info(f"Detected {len(faces)} face(s)")
-        
-        if len(faces) == 0:
-            return jsonify({
-                'success': True,
-                'face_detected': False,
-                'emotion': None,
-                'probabilities': {}
-            })
-        
-        # Process first face
-        x, y, w, h = faces[0]
-        logger.debug(f"Processing face at ({x}, {y}) with size {w}x{h}")
-        
-        face = gray[y:y+h, x:x+w]
-        face = cv2.resize(face, (48, 48), interpolation=cv2.INTER_AREA)
-        face = face.astype('float32') / 255.0
-        face = np.reshape(face, (1, 48, 48, 1))
-        
-        # Predict emotions with timing
-        import time
-        start_time = time.time()
-        logger.info("Starting emotion prediction...")
-        
-        try:
-            probs = emotion_model.predict(
-                face, 
-                verbose=0, 
-                batch_size=1
-            )[0]
-            
-            prediction_time = time.time() - start_time
-            logger.info(f"Prediction completed in {prediction_time:.2f} seconds")
-        except Exception as pred_error:
-            logger.error(f"Prediction error: {pred_error}")
-            return jsonify({
-                'success': True,
-                'face_detected': False,
-                'emotion': None,
-                'probabilities': {},
-                'error': 'Emotion prediction failed'
-            })
-        
-        # Create probability dictionary - only top 3 to reduce response size
-        sorted_indices = np.argsort(probs)[::-1]
-        probabilities = {emotion_labels[i]: float(probs[i]) for i in sorted_indices[:3]}
-        
-        # Get dominant emotion
-        dominant_idx = np.argmax(probs)
-        dominant_emotion = emotion_labels[dominant_idx]
-        confidence = float(probs[dominant_idx])
-        
-        logger.info(f"Detected emotion: {dominant_emotion} ({confidence:.2%} confidence)")
-        
+        # Emotion detection moved to client-side using TensorFlow.js (face-api.js)
+        # This endpoint is kept for backwards compatibility
         return jsonify({
-            'success': True,
-            'face_detected': True,
-            'emotion': dominant_emotion,
-            'confidence': confidence,
-            'probabilities': probabilities,
-            'face_location': {'x': int(x), 'y': int(y), 'width': int(w), 'height': int(h)}
-        })
+            'error': 'Emotion detection is now handled client-side',
+            'details': 'Please use TensorFlow.js (face-api.js) in the browser for face detection',
+            'migration_note': 'Server-side emotion detection removed to reduce memory and dependencies',
+            'success': False
+        }), 410  # 410 Gone - resource no longer available
         
     except Exception as e:
-        logger.error(f"Error in emotion detection: {e}")
-        import traceback
-        logger.error(traceback.format_exc())
-        return jsonify({'error': 'Internal server error processing emotion detection'}), 500
+        logger.error(f"Error in emotion detection endpoint: {e}")
+        return jsonify({'error': str(e)}), 500
 
 
 if __name__ == '__main__':
