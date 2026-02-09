@@ -66,10 +66,10 @@ async function loadQuestions() {
           userName: "Guest Player",
           faceEmotion: "Neutral",
           faceConfidence: 0,
-          faceAnalysisData: {}
+          faceAnalysisData: {},
         }),
       });
-      
+
       if (createResponse.ok) {
         const sessionData = await createResponse.json();
         sessionId = sessionData.sessionId;
