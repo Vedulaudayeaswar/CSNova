@@ -1497,12 +1497,37 @@ function restartGame() {
 // Fetch career recommendation from backend
 async function fetchCareerRecommendation() {
   try {
+    if (!sessionId) {
+      console.error("❌ No sessionId available!");
+      const careerEl = document.getElementById("recommendedCareer");
+      if (careerEl) careerEl.textContent = "Session not found";
+      return;
+    }
+
+    console.log(
+      `🔍 Fetching career recommendation for session ${sessionId}...`,
+    );
+
     const response = await fetch(`/api/career/recommend/${sessionId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
     });
 
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`❌ API error (${response.status}):`, errorText);
+      throw new Error(`API returned ${response.status}: ${errorText}`);
+    }
+
     const data = await response.json();
+
+    // Check if API returned an error
+    if (data.error) {
+      console.error("❌ API returned error:", data.error);
+      const careerEl = document.getElementById("recommendedCareer");
+      if (careerEl) careerEl.textContent = data.error;
+      return;
+    }
 
     // Store data globally for download
     careerRecommendationData = data;
@@ -1514,8 +1539,16 @@ async function fetchCareerRecommendation() {
     const pathEl = document.getElementById("careerPath");
     const matchesEl = document.getElementById("careerMatches");
 
-    if (careerEl && data.career) {
-      careerEl.textContent = data.career;
+    if (careerEl) {
+      if (data.career || data.recommendedCareer) {
+        careerEl.textContent = data.career || data.recommendedCareer;
+        console.log("✅ Set career text:", careerEl.textContent);
+      } else {
+        careerEl.textContent = "No career recommendation available";
+        console.warn("⚠️ No career field in response");
+      }
+    } else {
+      console.error("❌ recommendedCareer element not found in DOM!");
     }
 
     if (detailsEl && pathEl && data.careerPath) {
