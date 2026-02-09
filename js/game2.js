@@ -63,6 +63,28 @@ async function loadQuestions() {
     sessionId =
       urlParams.get("session_id") || localStorage.getItem("sessionId");
 
+    // If no session exists, create one
+    if (!sessionId) {
+      console.log("⚠️ No session found, creating new session...");
+      const createResponse = await fetch("/api/session/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userName: "Guest Player",
+          faceEmotion: "Neutral",
+          faceConfidence: 0,
+          faceAnalysisData: {}
+        }),
+      });
+      
+      if (createResponse.ok) {
+        const sessionData = await createResponse.json();
+        sessionId = sessionData.sessionId;
+        localStorage.setItem("sessionId", sessionId);
+        console.log("✅ Created new session:", sessionId);
+      }
+    }
+
     const response = await fetch(
       `/api/questions/reasoning?count=10&session_id=${sessionId}`,
     );

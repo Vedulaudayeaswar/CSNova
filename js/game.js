@@ -56,6 +56,28 @@ function toggleMusic() {
 // Fetch emotional questions from Flask API
 async function loadQuestions() {
   try {
+    // If no session exists, create one
+    if (!sessionId) {
+      console.log("⚠️ No session found, creating new session...");
+      const createResponse = await fetch("/api/session/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userName: "Guest Player",
+          faceEmotion: "Neutral",
+          faceConfidence: 0,
+          faceAnalysisData: {}
+        }),
+      });
+      
+      if (createResponse.ok) {
+        const sessionData = await createResponse.json();
+        sessionId = sessionData.sessionId;
+        localStorage.setItem("sessionId", sessionId);
+        console.log("✅ Created new session:", sessionId);
+      }
+    }
+
     const response = await fetch("/api/questions/emotional?count=10");
     const data = await response.json();
     questions = data.questions;
