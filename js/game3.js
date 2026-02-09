@@ -1542,6 +1542,17 @@ async function fetchCareerRecommendation() {
     if (!response.ok) {
       const errorText = await response.text();
       console.error(`❌ API error (${response.status}):`, errorText);
+
+      // If session not found (404), redirect to start fresh
+      if (response.status === 404 && errorText.includes("Session not found")) {
+        alert(
+          "⚠️ Your session has expired or was not found.\n\nThis can happen when:\n• The server was restarted\n• You're using an old link\n• Your session data was cleared\n\nYou'll be redirected to start fresh.",
+        );
+        localStorage.removeItem("sessionId");
+        setTimeout(() => (window.location.href = "/"), 2000);
+        return;
+      }
+
       throw new Error(`API returned ${response.status}: ${errorText}`);
     }
 

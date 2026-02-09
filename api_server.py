@@ -72,6 +72,12 @@ if not EMAIL_ADDRESS and os.environ.get('FLASK_ENV') == 'production':
 # Database configuration - SQLite (no installation needed!)
 DB_FILE = os.environ.get('DATABASE_URL', 'career_guidance.db')
 
+# Ensure database directory exists (for persistent disk on Render)
+db_dir = os.path.dirname(DB_FILE)
+if db_dir and not os.path.exists(db_dir):
+    os.makedirs(db_dir, exist_ok=True)
+    logger.info(f"Created database directory: {db_dir}")
+
 # Initialize RAG system lazily (after server starts)
 logger.info("RAG system will be loaded on first use")
 rag_system = None
