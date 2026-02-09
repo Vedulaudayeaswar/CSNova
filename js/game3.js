@@ -72,10 +72,10 @@ async function loadQuestions() {
           userName: "Guest Player",
           faceEmotion: "Neutral",
           faceConfidence: 0,
-          faceAnalysisData: {}
+          faceAnalysisData: {},
         }),
       });
-      
+
       if (createResponse.ok) {
         const sessionData = await createResponse.json();
         sessionId = sessionData.sessionId;
@@ -1639,108 +1639,165 @@ function downloadCareerRoadmap() {
   // Create comprehensive roadmap content
   let content = `
 ╔════════════════════════════════════════════════════════════════╗
-║          C$S CAREER GUIDANCE SYSTEM - YOUR ROADMAP            ║
+║          C$S CAREER GUIDANCE SYSTEM - YOUR ROADMAP            ║  
 ║                    Generated: ${date}                    ║
 ╚════════════════════════════════════════════════════════════════╝
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-🎯 YOUR RECOMMENDED CAREER PATH
+🎯 YOUR RECOMMENDED CAREER
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-${data.career || data.recommendedCareer}
+╔════════════════════════════════════════════════════════════════╗
+║                                                                ║
+║            🌟 ${(data.career || data.recommendedCareer || "CAREER").toUpperCase()} 🌟            
+║                                                                ║
+║              ✅ MATCH CONFIDENCE: ${data.confidenceScore || 0}%                    ║
+╚════════════════════════════════════════════════════════════════╝
 
-Confidence Score: ${data.confidenceScore || 0}%
+📝 WHY THIS CAREER FITS YOU:
+${data.description || "This career aligns perfectly with your skills and interests!"}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-📚 COMPLETE ROADMAP
+📚 YOUR STEP-BY-STEP ROADMAP TO SUCCESS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-${data.careerPath || data.description || "No detailed path available"}
+${data.careerPath || "Follow the path outlined by your counselor and mentors."}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-🏆 TOP 5 CAREER MATCHES FOR YOU
+🏆 OTHER GREAT CAREER OPTIONS FOR YOU
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Based on your profile, these careers also match well:
 `;
 
-  if (data.allMatches && data.allMatches.length > 0) {
-    data.allMatches.slice(0, 5).forEach((match, index) => {
+  if (data.allMatches && data.allMatches.length > 1) {
+    data.allMatches.slice(1, 5).forEach((match, index) => {
       content += `
-${index + 1}. ${match.career}
-   Score: ${match.score} points
-   
-${match.path || "Details not available"}
-
-${"─".repeat(66)}
+${index + 2}. ${match.career} - Match: ${match.score} points
+   ${match.education || ""}${match.salary ? " | " + match.salary : ""}
 `;
     });
+  } else {
+    content +=
+      "\nOther options will be suggested based on your evolving interests.\n";
   }
 
   content += `
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-📊 YOUR PROFILE ANALYSIS
+� YOUR KEY STRENGTHS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Emotional Intelligence:
 `;
+
+  // Show only strong scores (positive values)
+  let hasStrengths = false;
 
   if (data.emotionalScores) {
-    for (const [key, value] of Object.entries(data.emotionalScores)) {
-      content += `  • ${key}: ${value > 0 ? "+" : ""}${value}\n`;
+    const strongEmotional = Object.entries(data.emotionalScores).filter(
+      ([k, v]) => v > 5,
+    );
+    if (strongEmotional.length > 0) {
+      content += `💚 EMOTIONAL STRENGTHS:\n`;
+      strongEmotional.forEach(([key, value]) => {
+        content += `  ✓ Strong ${key.charAt(0).toUpperCase() + key.slice(1)} (${value} points)\n`;
+      });
+      hasStrengths = true;
     }
   }
-
-  content += `
-Reasoning Skills:
-`;
 
   if (data.reasoningScores) {
-    for (const [key, value] of Object.entries(data.reasoningScores)) {
-      content += `  • ${key}: ${value > 0 ? "+" : ""}${value}\n`;
+    const strongReasoning = Object.entries(data.reasoningScores).filter(
+      ([k, v]) => v > 5,
+    );
+    if (strongReasoning.length > 0) {
+      content += `\n🧠 REASONING STRENGTHS:\n`;
+      strongReasoning.forEach(([key, value]) => {
+        content += `  ✓ Strong ${key.charAt(0).toUpperCase() + key.slice(1)} (${value} points)\n`;
+      });
+      hasStrengths = true;
     }
   }
-
-  content += `
-Academic Interests:
-`;
 
   if (data.academicScores) {
-    for (const [key, value] of Object.entries(data.academicScores)) {
-      content += `  • ${key}: ${value > 0 ? "+" : ""}${value}\n`;
+    const strongAcademic = Object.entries(data.academicScores).filter(
+      ([k, v]) => v > 5,
+    );
+    if (strongAcademic.length > 0) {
+      content += `\n📚 ACADEMIC STRENGTHS:\n`;
+      strongAcademic.forEach(([key, value]) => {
+        content += `  ✓ Strong ${key.replace(/_/g, " ").toUpperCase()} (${value} points)\n`;
+      });
+      hasStrengths = true;
     }
+  }
+
+  if (!hasStrengths) {
+    content += `Based on your assessment, you have a balanced skill profile. 
+Focus on developing skills specific to ${data.career || "your chosen career"}.
+`;
   }
 
   content += `
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-💡 NEXT STEPS
+🎯 YOUR ACTION PLAN - START TODAY!
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-1. Review this roadmap carefully
-2. Discuss with parents/teachers
-3. Start preparing from TODAY
-4. Research more about your recommended career
-5. Connect with professionals in this field
-6. Work on the skills mentioned in the roadmap
+THIS WEEK:
+  ☐ Share this roadmap with your parents and teachers
+  ☐ Research 3 successful people in "${data.career || "your field"}"
+  ☐ Watch YouTube videos about this career
+
+THIS MONTH:
+  ☐ Start learning the first skill mentioned in your roadmap
+  ☐ Join online communities related to this career
+  ☐ Create a study plan based on the roadmap
+
+THIS YEAR:
+  ☐ Build a small project or portfolio
+  ☐ Connect with professionals in this field
+  ☐ Set clear milestones and track your progress
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-🎓 Remember: Your career path is a journey, not a destination!
-   Stay curious, keep learning, and believe in yourself! 
+📞 NEED HELP?
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Remember: This is YOUR journey. Don't compare with others.
+Every expert was once a beginner. Start small, stay consistent!
+
+Talk to:
+  • Your school counselor
+  • Teachers in related subjects  
+  • Professionals in ${data.career || "this field"}
+  • Family and mentors
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Generated by C$S Career Guidance System
+✨ FINAL WORDS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+"Success is not the key to happiness. 
+ Happiness is the key to success. 
+ If you love what you are doing, you will be successful."
+
+Your potential is limitless. Believe in yourself! 🚀
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Generated by: C$S Career Guidance System
 Session ID: ${sessionId || "N/A"}
-Date: ${new Date().toLocaleString()}
+Date & Time: ${new Date().toLocaleString()}
+Version: 2.0
 
-For more information, visit: https://github.com/yourusername/css-career
-`;
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ `;
 
   // Create blob and download
   const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
