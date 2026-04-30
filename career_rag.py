@@ -1,6 +1,9 @@
 
+import csv
 import json
 import logging
+import os
+import re
 from threading import Lock
 
 logger = logging.getLogger(__name__)
@@ -32,6 +35,23 @@ class CareerRAG:
     
     def _load_career_database(self):
         """Load comprehensive career database with scoring rules"""
+        csv_path = os.path.join(os.path.dirname(__file__), "career_recommendation_dataset.csv")
+        if os.path.exists(csv_path):
+            try:
+                careers = []
+                with open(csv_path, "r", encoding="utf-8") as csv_file:
+                    reader = csv.DictReader(csv_file)
+                    for row in reader:
+                        career = self._row_to_career(row)
+                        if career:
+                            careers.append(career)
+
+                if careers:
+                    logger.info(f"Loaded {len(careers)} careers from CSV dataset")
+                    return careers
+            except Exception as e:
+                logger.warning(f"Failed to load CSV career dataset, using fallback data: {e}")
+
         return [
             # ============ TECHNOLOGY & COMPUTER SCIENCE ============
             {
@@ -481,6 +501,14 @@ class CareerRAG:
                 'salary_range': career['salary_range'],
                 'student_guidance': career['student_guidance'],
                 'job_locations': career['job_locations'],
+                'after_10th_options': career.get('after_10th_options', ''),
+                'after_12th_options': career.get('after_12th_options', ''),
+                'skills_required': career.get('skills_required', ''),
+                'roadmap': career.get('roadmap', ''),
+                'recommended_courses': career.get('recommended_courses', ''),
+                'top_colleges': career.get('top_colleges', ''),
+                'growth_outlook': career.get('growth_outlook', ''),
+                'tags': career.get('tags', ''),
                 'match_score': int(score * 100 / 30)  # Normalize to 0-100
             })
         
@@ -500,6 +528,119 @@ class CareerRAG:
             else:
                 scores[key] = 0
         return scores
+
+    def _row_to_career(self, row):
+        """Convert a CSV row into the internal career schema."""
+        name = (row.get("career_name") or "").strip()
+        if not name:
+            return None
+
+        stream = (row.get("stream") or "Any").strip()
+        after_10th = (row.get("after_10th_options") or "").strip()
+        after_12th = (row.get("after_12th_options") or "").strip()
+        skills_required = (row.get("skills_required") or "").strip()
+        roadmap = (row.get("roadmap") or "").strip()
+        recommended_courses = (row.get("recommended_courses") or "").strip()
+        top_colleges = (row.get("top_colleges") or "").strip()
+        salary_range = (row.get("salary_range") or "Not specified").strip()
+        growth_outlook = (row.get("growth_outlook") or "Not specified").strip()
+        tags = (row.get("tags") or "").strip()
+
+        token_source = " ".join([
+            name,
+            stream,
+            skills_required,
+            roadmap,
+            recommended_courses,
+            tags,
+        ])
+        tokens = set(re.findall(r"[a-z0-9_+#/]+", token_source.lower()))
+
+        emotional_match = self._build_emotional_match(tokens)
+        reasoning_match = self._build_reasoning_match(tokens)
+        academic_match = self._build_academic_match(tokens, stream.lower())
+
+        description = (
+            f"{name} is a {stream} career. Required skills: {skills_required or 'varies by role'}. "
+            f"Growth outlook: {growth_outlook}."
+        )
+        education_path = f"After 10th: {after_10th or 'Choose suitable stream'}. After 12th: {after_12th or 'Choose degree/certification path'}."
+        guidance_parts = [part for part in [roadmap, recommended_courses] if part]
+        student_guidance = " | ".join(guidance_parts) if guidance_parts else "Build relevant skills and practice consistently."
+
+        return {
+            "name": name,
+            "category": stream,
+            "description": description,
+            "education_path": education_path,
+            "salary_range": salary_range,
+            "student_guidance": student_guidance,
+            "job_locations": top_colleges or "Varies by role",
+            "after_10th_options": after_10th,
+            "after_12th_options": after_12th,
+            "skills_required": skills_required,
+            "roadmap": roadmap,
+            "recommended_courses": recommended_courses,
+            "top_colleges": top_colleges,
+            "growth_outlook": growth_outlook,
+            "tags": tags,
+            "emotional_match": emotional_match,
+            "reasoning_match": reasoning_match,
+            "academic_match": academic_match,
+        }
+
+    def _build_emotional_match(self, tokens):
+        weights = {"curiosity": 1, "confidence": 1}
+
+        if {"medical", "social", "psychology", "teacher", "education", "health"} & tokens:
+            weights["empathy"] = 3
+        if {"business", "entrepreneur", "manager", "banker", "marketing", "law"} & tokens:
+            weights["confidence"] = 3
+            weights["risk"] = 2
+        if {"security", "cybersecurity", "ethical", "hacker", "doctor", "ca"} & tokens:
+            weights["stress"] = 1
+
+        return weights
+
+    def _build_reasoning_match(self, tokens):
+        weights = {"logic": 1, "analysis": 1}
+
+        if {"coding", "software", "developer", "engineer", "ai", "ml", "data", "cloud", "devops", "blockchain"} & tokens:
+            weights["logic"] = 3
+            weights["problem_solving"] = 3
+            weights["analysis"] = 2
+        if {"finance", "accounting", "banker", "ca", "analyst"} & tokens:
+            weights["analysis"] = 3
+            weights["decision"] = 2
+        if {"design", "fashion", "animation", "photographer", "ui", "ux", "creative"} & tokens:
+            weights["abstraction"] = 2
+            weights["analysis"] = max(weights.get("analysis", 1), 2)
+
+        return weights
+
+    def _build_academic_match(self, tokens, stream):
+        weights = {}
+
+        if stream == "science":
+            weights.update({"physics": 2, "chemistry": 2, "mathematics": 2})
+        elif stream == "commerce":
+            weights.update({"mathematics": 2, "career_awareness": 2})
+        elif stream == "arts":
+            weights.update({"career_awareness": 2})
+        else:
+            weights.update({"career_awareness": 1})
+
+        if {"coding", "software", "developer", "ai", "ml", "data", "cloud", "devops", "cybersecurity", "web", "app"} & tokens:
+            weights["computer_science"] = 3
+            weights["mathematics"] = max(weights.get("mathematics", 0), 2)
+        if {"doctor", "medical", "pharmacist", "biotech", "psychology", "biology"} & tokens:
+            weights["biology"] = 3
+            weights["chemistry"] = max(weights.get("chemistry", 0), 2)
+        if {"electrical", "electronics", "robotics", "mechanical", "civil", "pilot", "astronomer"} & tokens:
+            weights["physics"] = max(weights.get("physics", 0), 3)
+            weights["mathematics"] = max(weights.get("mathematics", 0), 2)
+
+        return weights
     
     def _calculate_match_score(self, career, emotional, reasoning, academic):
         """Calculate match score for a career"""

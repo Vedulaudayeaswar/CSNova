@@ -1594,8 +1594,8 @@ function restartGame() {
     titleEl &&
     titleEl.textContent === "MISSION COMPLETE!"
   ) {
-    // Move to next game with session_id
-    window.location.href = `/html/game3.html?session_id=${sessionId}`;
+    // Re-run emotion analysis before the next mission
+    window.location.href = "/html/face.html?next=game3.html";
   } else {
     // Restart current game
     window.location.reload();
@@ -1604,7 +1604,7 @@ function restartGame() {
 
 // Function for goToNextPhase button in HTML
 function goToNextPhase() {
-  window.location.href = `/html/game3.html?session_id=${sessionId}`;
+  window.location.href = "/html/face.html?next=game3.html";
 }
 
 // ============================================================================

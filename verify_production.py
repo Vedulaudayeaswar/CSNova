@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Production Readiness Verification Script
-Checks if the application is ready for deployment
+Local Readiness Verification Script
+Checks whether the application runs cleanly in the .venv and is ready for GitHub.
 """
 
 import os
@@ -61,7 +61,6 @@ def main():
     all_checks.append(check_file_exists("api_server.py"))
     all_checks.append(check_file_exists("career_rag.py"))
     all_checks.append(check_file_exists("requirements.txt"))
-    all_checks.append(check_file_exists("Procfile"))
     all_checks.append(check_file_exists("runtime.txt"))
     all_checks.append(check_file_exists("README.md"))
     
@@ -71,9 +70,8 @@ def main():
     all_checks.append(check_gitignore())
     check_file_exists(".env", required=False)
     
-    # Optional deployment files
-    print("\n🚀 Deployment Files:")
-    check_file_exists("render.yaml", required=False)
+    # Optional local helper scripts
+    print("\n🛠️  Local Helper Files:")
     check_file_exists("start.sh", required=False)
     
     # Frontend files
@@ -115,13 +113,12 @@ def main():
     # Final verdict
     print("\n" + "=" * 50)
     if all(all_checks):
-        print("✅ READY FOR PRODUCTION!")
+        print("✅ READY FOR GITHUB + LOCAL RUNS!")
         print("\n📝 Next steps:")
         print("1. Create .env file from .env.example")
         print("2. Add your credentials to .env")
         print("3. Test locally: python api_server.py")
         print("4. Push to GitHub")
-        print("5. Deploy on Render")
         return 0
     else:
         print("❌ NOT READY - Fix issues above")

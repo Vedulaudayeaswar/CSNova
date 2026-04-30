@@ -94,7 +94,7 @@ def test_imports():
     print("   1. git add .")
     print("   2. git commit -m 'feat: lightweight architecture'")
     print("   3. git push origin main")
-    print("   4. Deploy on Render (auto-deploy)")
+    print("   4. Run locally with: python api_server.py")
     print()
     return True
 

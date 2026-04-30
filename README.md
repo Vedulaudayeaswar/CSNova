@@ -12,7 +12,7 @@ An intelligent career guidance platform that combines facial emotion detection, 
 - **🤖 AI Career Recommendations**: RAG (Retrieval Augmented Generation) system
 - **📊 Smart Matching**: Matches student profiles to 30+ career options
 - **💾 SQLite Database**: No external database setup required
-- **🚀 Production Ready**: Configured for Render deployment
+- **🚀 Local Ready**: Runs fully in your `.venv` with SQLite
 
 ## 🏗️ Tech Stack
 
@@ -29,7 +29,7 @@ An intelligent career guidance platform that combines facial emotion detection, 
 
 - **Vanilla JavaScript**: No framework dependencies
 - **HTML5/CSS3**: Responsive design
-- **Face API**: Real-time emotion detection
+- **CNN Emotion Detection**: Server-side facial analysis in Python
 
 ### ML Models
 
@@ -39,8 +39,6 @@ An intelligent career guidance platform that combines facial emotion detection, 
 
 ## 🚀 Quick Start
 
-### Local Development
-
 1. **Clone the repository**
 
 ```bash
@@ -48,11 +46,11 @@ git clone <your-repo-url>
 cd C$SNOVA
 ```
 
-2. **Create virtual environment**
+2. **Create and activate your `.venv`**
 
 ```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+python -m venv .venv
+.\.venv\Scripts\activate
 ```
 
 3. **Install dependencies**
@@ -64,9 +62,10 @@ pip install -r requirements.txt
 4. **Set up environment variables**
 
 ```bash
-cp .env.example .env
-# Edit .env with your credentials
+copy .env.example .env
 ```
+
+Edit `.env` locally with your credentials if you use Google login or email reset.
 
 5. **Run the application**
 
@@ -76,18 +75,9 @@ python api_server.py
 
 Visit `http://localhost:5000` in your browser.
 
-## 🌐 Deploy to Render
+## GitHub Only Workflow
 
-### Prerequisites
-
-- GitHub account
-- Render account (free tier available)
-- Google OAuth credentials (optional)
-- Gmail app password (optional, for password reset)
-
-### Deployment Steps
-
-1. **Push to GitHub**
+Push the project to GitHub whenever you want to share or back it up:
 
 ```bash
 git init
@@ -98,44 +88,7 @@ git remote add origin <your-github-repo>
 git push -u origin main
 ```
 
-2. **Create Web Service on Render**
-   - Go to [Render Dashboard](https://dashboard.render.com/)
-   - Click "New +" → "Web Service"
-   - Connect your GitHub repository
-   - Configure:
-     - **Name**: `career-guidance-ai`
-     - **Environment**: `Python 3`
-     - **Build Command**: `pip install -r requirements.txt`
-     - **Start Command**: (leave blank, uses Procfile)
-     - **Instance Type**: Free
-
-3. **Set Environment Variables** on Render:
-
-```
-SECRET_KEY=<generate-random-32-char-string>
-FLASK_ENV=production
-GOOGLE_CLIENT_ID=<your-google-client-id>
-EMAIL_ADDRESS=<your-gmail@gmail.com>
-EMAIL_PASSWORD=<your-gmail-app-password>
-ALLOWED_ORIGINS=https://your-app.onrender.com
-```
-
-4. **Deploy**
-   - Click "Create Web Service"
-   - Render will automatically deploy from your GitHub repo
-   - Wait for build to complete (~5-10 minutes)
-   - Your app will be live at: `https://your-app.onrender.com`
-
-### 📝 Getting Google OAuth Credentials
-
-1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. Create a new project
-3. Enable Google+ API
-4. Create OAuth 2.0 credentials
-5. Add authorized redirect URIs:
-   - `https://your-app.onrender.com`
-   - `http://localhost:5000` (for local testing)
-6. Copy Client ID and set in environment variables
+For Google OAuth in local development, add `http://localhost:5000` as an authorized redirect URI in Google Cloud Console.
 
 ### 📧 Gmail App Password Setup
 
@@ -166,7 +119,6 @@ C$SNOVA/
 ├── api_server.py              # Main Flask application
 ├── career_rag.py              # RAG system for career matching
 ├── requirements.txt           # Python dependencies
-├── Procfile                   # Render deployment config
 ├── runtime.txt                # Python version
 ├── .env.example               # Environment template
 ├── .gitignore                 # Git ignore rules
@@ -248,70 +200,21 @@ git add .
 git commit -m "Production ready - no secrets exposed"
 ```
 
-## 📊 Scalability & Multi-User Support
+## 📊 Local Performance
 
-### ✅ YES - Render Can Handle Multiple Users!
+The app is designed to run locally in `.venv` with SQLite and the bundled CNN model.
 
-Your app is production-ready and configured to handle concurrent users:
+**What it handles well:**
 
-**How It Works:**
+- Multiple browser tabs on a local machine
+- Fast startup after the first TensorFlow load
+- SQLite-backed session and recommendation storage
 
-- **Gunicorn**: Runs 4 worker processes × 2 threads = **8 concurrent requests**
-- **Thread-Safe**: Database connections and RAG system use proper locking
-- **Stateless API**: Each request is independent (scales horizontally)
-- **SQLite**: Handles multiple concurrent reads (writes are serialized)
+**What to expect:**
 
-**Performance Estimates:**
-
-- **Free Tier**: ~10-50 concurrent users (with some delays)
-- **Paid Tier**: ~100-500 concurrent users (smooth experience)
-- **Auto-Scale**: Can handle thousands (with load balancer)
-
-### Render Handles:
-
-✅ **Load Balancing**: Distributes requests across workers  
-✅ **Auto-Restart**: Crashes don't affect other users  
-✅ **SSL/HTTPS**: Automatic secure connections  
-✅ **CDN**: Fast static file delivery worldwide  
-✅ **Health Checks**: Auto-recovery if server hangs
-
-### Free Tier Limitations:
-
-⚠️ Sleeps after 15 mins inactivity (30 sec cold start)  
-⚠️ 512 MB RAM (may restart if exceeded)  
-⚠️ Shared CPU (slower during peak times)
-
-### For Heavy Traffic:
-
-1. **Upgrade to Paid** ($7/mo): Always-on, more resources
-2. **Add PostgreSQL**: Better concurrent writes than SQLite
-3. **Enable Auto-Scale**: Automatically adds servers under load
-4. **Add Redis**: Shared session storage across instances
-
-**Bottom Line:** Start on free tier, monitor usage, upgrade when needed. Render scales with you!
-
-## 📊 Scalability
-
-### Render Can Handle:
-
-- **Multiple Users**: Gunicorn runs 4 workers + 2 threads = 8 concurrent requests
-- **Auto-scaling**: Render can scale instances automatically (paid plans)
-- **Persistent Storage**: SQLite database persists on Render's disk
-- **Global CDN**: Static files served via Render's CDN
-
-### For Heavy Traffic:
-
-- Upgrade to Render paid plan for more resources
-- Consider Redis for session/OTP storage (for multi-instance)
-- Migrate to PostgreSQL for better concurrent writes
-- Enable Render auto-scaling
-
-### Current Limits (Free Tier):
-
-- 750 hours/month runtime
-- Sleeps after 15 mins inactivity (cold start: ~30 sec)
-- 512 MB RAM
-- Shared CPU
+- First model load can take a few seconds
+- Chrome/Edge work best for camera access
+- Performance depends on your local CPU and RAM
 
 ## 🧪 Testing
 
@@ -337,27 +240,17 @@ curl http://localhost:5000/health
 ### Database Issues
 
 - SQLite creates `career_guidance.db` automatically
-- On Render, database resets on deploy (use persistent disk for production)
+- Back up the database file if you want to preserve local history
 
 ### Cold Start Delay
 
-- Free tier Render apps sleep after inactivity
-- First request takes ~30 seconds to wake up
+- TensorFlow may take a few seconds to initialize on first request
+- The first emotion scan can be slower than the rest
 
 ### CORS Errors
 
 - Set `ALLOWED_ORIGINS` to your frontend domain
 - Use comma-separated list for multiple origins
-
-## 📈 Future Enhancements
-
-- [ ] Redis for distributed session storage
-- [ ] PostgreSQL for better concurrency
-- [ ] Video interview analysis
-- [ ] Resume builder integration
-- [ ] College recommendation system
-- [ ] Job board integration
-- [ ] Mobile app (React Native)
 
 ## 🤝 Contributing
 
@@ -378,14 +271,14 @@ This project is licensed under the MIT License.
 For issues or questions:
 
 - Open GitHub issue
-- Contact: [Your Email]
+- Contact: [vedulaudayeaswar2004@gmail.com]
 
 ## 🙏 Acknowledgments
 
 - FER2013 dataset for emotion detection
 - Sentence Transformers by UKPLab
 - ChromaDB for vector storage
-- Render for hosting platform
+- GitHub for source control and sharing
 
 ---
 

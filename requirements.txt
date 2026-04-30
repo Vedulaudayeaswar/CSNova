@@ -10,8 +10,14 @@ google-auth==2.25.2
 google-auth-oauthlib==1.2.0
 google-auth-httplib2==0.2.0
 
+# Emotion CNN inference
+numpy==1.26.4
+opencv-python==4.9.0.80
+tensorflow==2.20.0
+keras==3.13.2
+
 # Database - SQLite is built into Python
 # No additional packages needed!
 
-# NOTE: Face detection uses TensorFlow.js (client-side)
-# NOTE: Career guidance uses rule-based matching (no ML needed)
+# NOTE: Face detection uses a server-side CNN model in the .venv
+# NOTE: Career guidance uses SQLite + RAG-backed matching

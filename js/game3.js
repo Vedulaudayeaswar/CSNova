@@ -1589,7 +1589,29 @@ async function fetchCareerRecommendation() {
     }
 
     if (detailsEl && pathEl && data.careerPath) {
-      pathEl.textContent = data.careerPath;
+      detailsEl.textContent = [
+        data.description ? `Why this matches: ${data.description}` : null,
+        data.skillsRequired ? `Skills required: ${data.skillsRequired}` : null,
+        data.recommendedCourses
+          ? `Recommended courses: ${data.recommendedCourses}`
+          : null,
+        data.topColleges ? `Top colleges: ${data.topColleges}` : null,
+        data.growthOutlook ? `Growth outlook: ${data.growthOutlook}` : null,
+      ]
+        .filter(Boolean)
+        .join("\n\n");
+
+      pathEl.textContent = data.careerRoadmap || data.careerPath;
+
+      if (data.after10th || data.after12th || data.howToPursue) {
+        pathEl.textContent = [
+          data.after10th ? `After 10th:\n${data.after10th}` : null,
+          data.after12th ? `After 12th:\n${data.after12th}` : null,
+          data.howToPursue ? `How to pursue it:\n${data.howToPursue}` : null,
+        ]
+          .filter(Boolean)
+          .join("\n\n");
+      }
 
       // Populate top 5 career matches if available
       if (matchesEl && data.allMatches) {
@@ -1674,7 +1696,21 @@ ${data.description || "This career aligns perfectly with your skills and interes
 📚 YOUR STEP-BY-STEP ROADMAP TO SUCCESS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-${data.careerPath || "Follow the path outlined by your counselor and mentors."}
+${data.careerRoadmap || data.careerPath || "Follow the path outlined by your counselor and mentors."}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🗂️ ROADMAP BREAKDOWN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+AFTER 10TH:
+${data.after10th || data.careerPath || "Choose the stream that best supports this career."}
+
+AFTER 12TH:
+${data.after12th || data.careerPath || "Follow the degree or certification route for this field."}
+
+HOW TO PURSUE IT:
+${data.howToPursue || data.careerPath || "Build the required skills step by step and stay consistent."}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

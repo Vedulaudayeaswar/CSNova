@@ -1708,8 +1708,8 @@ window.restartGame = function () {
     gameState === "ended" &&
     document.getElementById("gameOverTitle").textContent === "MISSION SUCCESS!"
   ) {
-    // Move to next game with session_id
-    window.location.href = `/html/game2.html?session_id=${sessionId}`;
+    // Re-run emotion analysis before the next mission
+    window.location.href = "/html/face.html?next=game2.html";
   } else {
     // Restart current game
     location.reload();

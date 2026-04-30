@@ -26,12 +26,11 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # ✅ LIGHTWEIGHT ARCHITECTURE:
-# - Face detection: Client-side using TensorFlow.js (face-api.js)
-# - Career guidance: Rule-based matching (no ML needed)
-# - No heavy dependencies required!
-logger.info("✅ Using lightweight client-side architecture")
-logger.info("   - Face detection: TensorFlow.js (browser)")
-logger.info("   - Career guidance: Rule-based matching")
+# - Face detection: Server-side CNN using the .venv
+# - Career guidance: SQLite + RAG-backed matching
+logger.info("✅ Using lightweight local architecture")
+logger.info("   - Face detection: CNN model in the .venv")
+logger.info("   - Career guidance: SQLite + RAG-backed matching")
 
 app = Flask(__name__, static_folder='.', static_url_path='')
 app.secret_key = os.environ.get('SECRET_KEY', os.urandom(24).hex())
@@ -72,7 +71,7 @@ if not EMAIL_ADDRESS and os.environ.get('FLASK_ENV') == 'production':
 # Database configuration - SQLite (no installation needed!)
 DB_FILE = os.environ.get('DATABASE_URL', 'career_guidance.db')
 
-# Ensure database directory exists (for persistent disk on Render)
+# Ensure database directory exists for local SQLite storage
 db_dir = os.path.dirname(DB_FILE)
 if db_dir and not os.path.exists(db_dir):
     os.makedirs(db_dir, exist_ok=True)
@@ -81,6 +80,10 @@ if db_dir and not os.path.exists(db_dir):
 # Initialize RAG system lazily (after server starts)
 logger.info("RAG system will be loaded on first use")
 rag_system = None
+
+# Initialize CNN emotion detector lazily (loaded from the .venv)
+logger.info("CNN emotion detector will be loaded on first use")
+emotion_detector = None
 
 def get_rag_system():
     """Lazy load RAG system on first use"""
@@ -95,6 +98,21 @@ def get_rag_system():
             logger.error(f"RAG system loading failed: {e}")
             logger.info("Using fallback recommendation system")
     return rag_system
+
+
+def get_emotion_detector():
+    """Lazy load the CNN emotion detector on first use"""
+    global emotion_detector
+    if emotion_detector is None:
+        try:
+            from emotion_cnn import get_emotion_cnn_detector
+
+            logger.info("Loading CNN emotion detector...")
+            emotion_detector = get_emotion_cnn_detector()
+            logger.info("CNN emotion detector loaded successfully!")
+        except Exception as e:
+            logger.error(f"Emotion detector loading failed: {e}")
+    return emotion_detector
 
 def get_db_connection():
     """Thread-safe database connection"""
@@ -288,6 +306,66 @@ CAREER_DATABASE = {
         "path": "💼 FOR 10th/12th STUDENTS:\n\n🎓 AFTER 10th:\n- Commerce is best choice\n- But ANY stream can do business!\n\n🎓 AFTER 12th:\n1. BBA or BCom (business knowledge)\n2. Or start business directly!\n3. Learn from successful entrepreneurs\n4. Start small, grow big\n\n💡 SKILLS TO START NOW:\n- Identify problems around you\n- Think of business solutions\n- Save money to invest\n- Learn basics of marketing\n- Understand profit/loss\n\n💰 INCOME: Unlimited potential!\n🏢 WHERE: Own business, Startups"
     }
 }
+
+
+def _clean_roadmap_text(text):
+    lines = []
+    for raw_line in (text or "").splitlines():
+        stripped = raw_line.strip().strip("-•").strip()
+        if stripped:
+            lines.append(stripped)
+    return "\n".join(lines).strip()
+
+
+def _extract_roadmap_segment(text, start_keyword, end_keyword=None):
+    if not text:
+        return ""
+
+    lowered = text.lower()
+    start_index = lowered.find(start_keyword.lower())
+    if start_index == -1:
+        return ""
+
+    end_index = len(text)
+    if end_keyword:
+        candidate = lowered.find(end_keyword.lower(), start_index + 1)
+        if candidate != -1:
+            end_index = candidate
+
+    return _clean_roadmap_text(text[start_index:end_index])
+
+
+def build_career_roadmap(primary_text, secondary_text=""):
+    """Format a roadmap with explicit 10th, 12th, and pursuit sections."""
+    combined_text = "\n".join(
+        part for part in [primary_text, secondary_text] if part
+    )
+
+    after_10th = _extract_roadmap_segment(combined_text, "after 10th", "after 12th")
+    after_12th = _extract_roadmap_segment(combined_text, "after 12th")
+    how_to_pursue = _clean_roadmap_text(secondary_text or primary_text)
+
+    if not after_10th:
+        after_10th = "Choose the stream that best supports this career path and build the basics early."
+    if not after_12th:
+        after_12th = _clean_roadmap_text(primary_text or secondary_text) or (
+            "Follow the degree, diploma, or certification route that matches this career."
+        )
+    if not how_to_pursue:
+        how_to_pursue = "Build the required skills step by step, practice consistently, and keep your focus on the target career."
+
+    career_roadmap = (
+        f"After 10th:\n{after_10th}\n\n"
+        f"After 12th:\n{after_12th}\n\n"
+        f"How to pursue it:\n{how_to_pursue}"
+    )
+
+    return {
+        "after_10th": after_10th,
+        "after_12th": after_12th,
+        "how_to_pursue": how_to_pursue,
+        "career_roadmap": career_roadmap,
+    }
 
 # ========== GOOGLE OAUTH ROUTES ==========
 
@@ -878,13 +956,38 @@ def recommend_career(session_id):
                 if rag_recommendations:
                     for i, rec in enumerate(rag_recommendations, 1):
                         print(f"  {i}. {rec['career_name']} (Match: {rec.get('match_score', 'N/A')}%)")
+                        roadmap = build_career_roadmap(
+                            rec.get('education_path', ''),
+                            rec.get('student_guidance', ''),
+                        )
+
+                        after_10th = rec.get('after_10th_options') or roadmap['after_10th']
+                        after_12th = rec.get('after_12th_options') or roadmap['after_12th']
+                        how_to_pursue = rec.get('roadmap') or roadmap['how_to_pursue']
+
+                        career_roadmap = (
+                            f"After 10th:\n{after_10th}\n\n"
+                            f"After 12th:\n{after_12th}\n\n"
+                            f"How to pursue it:\n{how_to_pursue}"
+                        )
+
                         career_matches.append({
                             'career': rec['career_name'],
                             'score': rec.get('match_score', 80),
-                            'path': rec['student_guidance'],
+                            'path': career_roadmap,
                             'education': rec['education_path'],
+                            'guidance': rec.get('student_guidance', ''),
+                            'after_10th': after_10th,
+                            'after_12th': after_12th,
+                            'how_to_pursue': how_to_pursue,
+                            'career_roadmap': career_roadmap,
                             'salary': rec['salary_range'],
-                            'category': rec['category']
+                            'category': rec['category'],
+                            'skills_required': rec.get('skills_required', ''),
+                            'recommended_courses': rec.get('recommended_courses', ''),
+                            'top_colleges': rec.get('top_colleges', ''),
+                            'growth_outlook': rec.get('growth_outlook', ''),
+                            'tags': rec.get('tags', ''),
                         })
                     
                     top_career = career_matches[0]
@@ -928,11 +1031,17 @@ def recommend_career(session_id):
                     score += 5
                 elif len(answers) >= 15:
                     score += 3
+
+                roadmap = build_career_roadmap(profile['path'])
                 
                 career_matches.append({
                     'career': career,
                     'score': score,
-                    'path': profile['path']
+                    'path': roadmap['career_roadmap'],
+                    'after_10th': roadmap['after_10th'],
+                    'after_12th': roadmap['after_12th'],
+                    'how_to_pursue': roadmap['how_to_pursue'],
+                    'career_roadmap': roadmap['career_roadmap']
                 })
             
             career_matches.sort(key=lambda x: x['score'], reverse=True)
@@ -964,9 +1073,18 @@ def recommend_career(session_id):
         return jsonify({
             'career': top_career['career'],
             'recommendedCareer': top_career['career'],
-            'description': f"Based on your profile, {top_career['career']} is a great fit for you! {top_career['path']}",
+            'description': f"Based on your profile, {top_career['career']} is a great fit for you.",
             'confidenceScore': top_career.get('score', 80),
-            'careerPath': top_career['path'],
+            'careerPath': top_career.get('career_roadmap', top_career['path']),
+            'careerRoadmap': top_career.get('career_roadmap', top_career['path']),
+            'after10th': top_career.get('after_10th', ''),
+            'after12th': top_career.get('after_12th', ''),
+            'howToPursue': top_career.get('how_to_pursue', ''),
+            'skillsRequired': top_career.get('skills_required', ''),
+            'recommendedCourses': top_career.get('recommended_courses', ''),
+            'topColleges': top_career.get('top_colleges', ''),
+            'growthOutlook': top_career.get('growth_outlook', ''),
+            'tags': top_career.get('tags', ''),
             'emotionalScores': emotional_scores,
             'reasoningScores': reasoning_scores,
             'academicScores': academic_scores,
@@ -1012,14 +1130,14 @@ def get_session_summary(session_id):
 # FRONTEND ROUTES - Serve HTML/CSS/JS files
 # ============================================================================
 
-# Health check endpoint for Render
+# Health check endpoint for local monitoring
 @app.route('/health')
 def health_check():
     """Health check endpoint for monitoring"""
     return jsonify({
         'status': 'healthy',
         'timestamp': datetime.now().isoformat(),
-        'emotion_detection': 'client-side (TensorFlow.js)',
+        'emotion_detection': 'server-side CNN (.venv)',
         'rag_system_loaded': get_rag_system() is not None
     })
 
@@ -1104,20 +1222,25 @@ def explore_careers():
 @app.route('/api/emotion/detect', methods=['POST'])
 @limiter.limit("30 per minute")
 def detect_emotion():
-    """Emotion detection endpoint - now handled client-side with TensorFlow.js"""
+    """Detect emotion from a webcam frame using the trained CNN model."""
     try:
-        # Emotion detection moved to client-side using TensorFlow.js (face-api.js)
-        # This endpoint is kept for backwards compatibility
-        return jsonify({
-            'error': 'Emotion detection is now handled client-side',
-            'details': 'Please use TensorFlow.js (face-api.js) in the browser for face detection',
-            'migration_note': 'Server-side emotion detection removed to reduce memory and dependencies',
-            'success': False
-        }), 410  # 410 Gone - resource no longer available
+        data = request.get_json(silent=True) or {}
+        image_data = data.get('image') or data.get('imageData') or data.get('frame')
+
+        detector = get_emotion_detector()
+        if detector is None:
+            return jsonify({
+                'success': False,
+                'error': 'Emotion detector unavailable',
+                'details': 'The CNN model could not be loaded in the current .venv.'
+            }), 503
+
+        result = detector.analyze_image_data(image_data)
+        return jsonify(result)
         
     except Exception as e:
         logger.error(f"Error in emotion detection endpoint: {e}")
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'success': False, 'error': 'Emotion detection failed', 'details': str(e)}), 500
 
 
 if __name__ == '__main__':

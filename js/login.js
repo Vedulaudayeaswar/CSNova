@@ -1162,42 +1162,79 @@ document
  */
 async function loadGoogleClientId() {
   try {
-    const response = await fetch('/api/auth/config');
+    const response = await fetch("/api/auth/config");
     const config = await response.json();
-    
+
     if (config.client_id && config.has_google_auth) {
-      // Set the client ID in the Google Sign-In button
-      const googleButton = document.getElementById('g_id_onload');
-      if (googleButton) {
-        googleButton.setAttribute('data-client_id', config.client_id);
-        // Force Google Sign-In to re-initialize with the new client ID
-        if (window.google && window.google.accounts) {
-          google.accounts.id.initialize({
-            client_id: config.client_id,
-            callback: handleGoogleSignIn
-          });
-          google.accounts.id.renderButton(
-            document.querySelector('.g_id_signin'),
-            { theme: 'outline', size: 'large', text: 'sign_in_with' }
-          );
+      const renderButtons = () => {
+        if (
+          !window.google ||
+          !window.google.accounts ||
+          !window.google.accounts.id
+        ) {
+          return false;
         }
+
+        google.accounts.id.initialize({
+          client_id: config.client_id,
+          callback: handleGoogleSignIn,
+        });
+
+        const loginButton = document.getElementById("loginGoogleSignIn");
+        const registerButton = document.getElementById("registerGoogleSignIn");
+
+        if (loginButton) {
+          loginButton.innerHTML = "";
+          google.accounts.id.renderButton(loginButton, {
+            theme: "outline",
+            size: "large",
+            text: "sign_in_with",
+            shape: "rectangular",
+            logo_alignment: "left",
+            width: "100%",
+          });
+        }
+
+        if (registerButton) {
+          registerButton.innerHTML = "";
+          google.accounts.id.renderButton(registerButton, {
+            theme: "outline",
+            size: "large",
+            text: "signup_with",
+            shape: "rectangular",
+            logo_alignment: "left",
+            width: "100%",
+          });
+        }
+
+        return true;
+      };
+
+      if (!renderButtons()) {
+        const intervalId = setInterval(() => {
+          if (renderButtons()) {
+            clearInterval(intervalId);
+          }
+        }, 100);
+
+        setTimeout(() => clearInterval(intervalId), 10000);
       }
     } else {
-      console.warn('Google OAuth not configured');
+      console.warn("Google OAuth not configured");
       // Hide Google Sign-In button if not configured
-      const googleContainer = document.getElementById('g_id_onload');
-      const googleButton = document.querySelector('.g_id_signin');
-      if (googleContainer) googleContainer.style.display = 'none';
-      if (googleButton) googleButton.style.display = 'none';
+      const loginButton = document.getElementById("loginGoogleSignIn");
+      const registerButton = document.getElementById("registerGoogleSignIn");
+      if (loginButton) loginButton.style.display = "none";
+      if (registerButton) registerButton.style.display = "none";
     }
   } catch (error) {
-    console.error('Failed to load Google auth config:', error);
+    console.error("Failed to load Google auth config:", error);
   }
 }
 
 // Load Google Client ID when page loads
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', loadGoogleClientId);
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", loadGoogleClientId);
 } else {
   loadGoogleClientId();
 }
